@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>gg.neko.spiceit</groupId>
+        <artifactId>spiceit-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spiceit-example-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>SpiceIt Example Parent</name>
+    <description>SpiceIt Example Parent contains sample projects using SpiceIt.</description>
+
+    <modules>
+        <module>spiceit-example-maven-plugin</module>
+        <module>spiceit-example-agent</module>
+    </modules>
+
+</project>
