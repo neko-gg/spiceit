@@ -12,6 +12,24 @@
 
     <name>SpiceIt Parent</name>
     <description>SpiceIt is a collection of nice, easy to use features to make your code spicier.</description>
+    <url>https://github.com/neko-gg/spiceit</url>
+
+    <issueManagement>
+        <url>https://github.com/neko-gg/spiceit/issues</url>
+        <system>GitHub</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/neko-gg/spiceit</url>
+        <connection>scm:git:https://github.com/neko-gg/spiceit.git</connection>
+    </scm>
 
     <developers>
         <developer>
@@ -31,21 +49,33 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
+        <versions-maven-plugin.rulesUri>file:///${project.basedir}/dependency-check-maven-ruleset.xml</versions-maven-plugin.rulesUri>
+
         <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.1.1</maven-javadoc-plugin.version>
         <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
         <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
         <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
 
-        <maven-plugin-api.version>3.6.1</maven-plugin-api.version>
+        <maven-plugin-api.version>3.6.2</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
         <maven-project.version>2.2.1</maven-project.version>
 
-        <slf4j-api.version>1.7.26</slf4j-api.version>
+        <maven-site-plugin.version>3.8.2</maven-site-plugin.version>
+        <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+        <dependency-check-maven.version>5.2.2</dependency-check-maven.version>
+        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+
+        <slf4j-api.version>1.7.28</slf4j-api.version>
         <javassist.version>3.25.0-GA</javassist.version>
         <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
         <logback-classic.version>1.2.3</logback-classic.version>
-        <junit-jupiter-api.version>5.5.1</junit-jupiter-api.version>
+        <junit-jupiter-api.version>5.5.2</junit-jupiter-api.version>
     </properties>
 
     <dependencyManagement>
@@ -138,6 +168,29 @@
                 </plugin>
                 <!-- SpiceIt plugins end -->
 
+                <!-- Reporting plugins start -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven-project-info-reports-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${dependency-check-maven.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${versions-maven-plugin.version}</version>
+                </plugin>
+                <!-- Reporting plugins end -->
+
                 <!-- Maven plugins start -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -164,11 +217,37 @@
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${maven-assembly-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven-install-plugin.version}</version>
+                </plugin>
                 <!-- Maven plugins end -->
             </plugins>
         </pluginManagement>
 
         <plugins>
+            <!-- Maven plugins start -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -193,8 +272,43 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Maven plugins end -->
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependency-updates-report</report>
+                            <report>plugin-updates-report</report>
+                            <report>property-updates-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+                <configuration>
+                    <rulesUri>${versions-maven-plugin.rulesUri}</rulesUri>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <inherited>false</inherited>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <modules>
         <module>spiceit-api</module>
