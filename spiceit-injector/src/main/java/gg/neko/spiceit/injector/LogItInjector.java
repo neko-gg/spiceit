@@ -9,8 +9,6 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
-import java.util.Locale;
-
 public class LogItInjector {
 
     private LogItInjector() {}
@@ -19,56 +17,124 @@ public class LogItInjector {
         boolean logArgs = logIt.logArgs();
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
 
-        // todo: these three methods are very similar, try to refactor them
         logEntry(ctMethod, ctLoggerField, logArgs);
         logError(ctMethod, ctLoggerField, logArgs);
         logExit(ctMethod, ctLoggerField, logArgs);
     }
 
-    // todo: make logArgs act as in the other two methods (check twice + object array as logger arg)
-    // todo: checking logArgs twice and string-formatting is ugly, try using two separate template strings
     private static void logEntry(CtMethod ctMethod, CtField ctLoggerField, boolean logArgs) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(ctLoggerField.getName())
+                     .append(".info(")
+                     .append("\"")
+                     .append("[ENTRY] ")
+                     .append("class: ")
+                     .append(ctMethod.getDeclaringClass().getName())
+                     .append(", ")
+                     .append("method: ")
+                     .append(InjectorUtils.getMethodSignature(ctMethod));
+
+        if (logArgs) {
+            stringBuilder.append(", ")
+                         .append("args: ")
+                         .append("{}")
+                         .append("\"")
+                         .append(", ")
+                         .append("java.util.Arrays.toString($args)");
+        } else {
+            stringBuilder.append("\"");
+        }
+
+        stringBuilder.append(");");
+
         try {
-            ctMethod.insertBefore(String.format(Locale.US,
-                                                "%s.info(\"[ENTRY] class: %s, method: %s%s);",
-                                                ctLoggerField.getName(),
-                                                ctMethod.getDeclaringClass().getName(),
-                                                InjectorUtils.getMethodSignature(ctMethod),
-                                                logArgs ? ", args: {}\", java.util.Arrays.toString($args)"
-                                                        : "\""));
+            ctMethod.insertBefore(stringBuilder.toString());
         } catch (CannotCompileException e) {
             throw new SpiceItReviserException(e);
         }
     }
 
     private static void logError(CtMethod ctMethod, CtField ctLoggerField, boolean logArgs) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(ctLoggerField.getName())
+                     .append(".error(")
+                     .append("\"")
+                     .append("[ERROR] ")
+                     .append("class: ")
+                     .append(ctMethod.getDeclaringClass().getName())
+                     .append(", ")
+                     .append("method: ")
+                     .append(InjectorUtils.getMethodSignature(ctMethod));
+
+        if (logArgs) {
+            stringBuilder.append(", ")
+                         .append("args: ")
+                         .append("{}");
+        }
+
+        stringBuilder.append(", ")
+                     .append("exception: ")
+                     .append("{}")
+                     .append("\"")
+                     .append(", ")
+                     .append("new java.lang.Object[]{");
+
+        if (logArgs) {
+            stringBuilder.append("java.util.Arrays.toString($args)")
+                         .append(", ");
+        }
+
+        stringBuilder.append("$e.getMessage()")
+                     .append(", ")
+                     .append("$e")
+                     .append("}); ")
+                     .append("throw $e;");
+
         try {
-            ctMethod.addCatch(String.format(Locale.US,
-                                            "%s.info(\"[ERROR] class: %s, method: %s, %sexception: {}\", new java.lang.Object[]{%s$e.getMessage(), $e}); throw $e;",
-                                            ctLoggerField.getName(),
-                                            ctMethod.getDeclaringClass().getName(),
-                                            InjectorUtils.getMethodSignature(ctMethod),
-                                            logArgs ? "args: {}, "
-                                                    : "",
-                                            logArgs ? "java.util.Arrays.toString($args), "
-                                                    : ""),
-                              getCatchExceptionTypeName());
+            ctMethod.addCatch(stringBuilder.toString(), getCatchExceptionTypeName());
         } catch (CannotCompileException e) {
             throw new SpiceItReviserException(e);
         }
     }
 
     private static void logExit(CtMethod ctMethod, CtField ctLoggerField, boolean logArgs) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(ctLoggerField.getName())
+                     .append(".info(")
+                     .append("\"")
+                     .append("[EXIT] ")
+                     .append("class: ")
+                     .append(ctMethod.getDeclaringClass().getName())
+                     .append(", ")
+                     .append("method: ")
+                     .append(InjectorUtils.getMethodSignature(ctMethod));
+
+        if (logArgs) {
+            stringBuilder.append(", ")
+                         .append("args: ")
+                         .append("{}");
+        }
+
+        stringBuilder.append(", ")
+                     .append("return: ")
+                     .append("{}")
+                     .append("\"")
+                     .append(", ")
+                     .append("new java.lang.Object[]{");
+
+        if (logArgs) {
+            stringBuilder.append("java.util.Arrays.toString($args)")
+                         .append(", ");
+        }
+
+        stringBuilder.append("($w)$_")
+                     .append("});");
+
         try {
-            ctMethod.insertAfter(String.format(Locale.US,
-                                               "%s.info(\"[EXIT] class: %s, method: %s, %sreturn: {}\", new java.lang.Object[]{%s($w)$_});",
-                                               ctLoggerField.getName(),
-                                               ctMethod.getDeclaringClass().getName(),
-                                               InjectorUtils.getMethodSignature(ctMethod),
-                                               logArgs ? "args: {}, "
-                                                       : "",
-                                               logArgs ? "java.util.Arrays.toString($args), "
-                                                       : ""));
+            ctMethod.insertAfter(stringBuilder.toString());
         } catch (CannotCompileException e) {
             throw new SpiceItReviserException(e);
         }

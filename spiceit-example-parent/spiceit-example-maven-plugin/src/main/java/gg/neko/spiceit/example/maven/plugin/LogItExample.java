@@ -28,6 +28,18 @@ public class LogItExample {
         } catch (Exception e) {
             LOGGER.info("should NOT have logged exception: {}", e.getMessage());
         }
+
+        try {
+            logThisThrowingMethodWithOneParamWithoutArgs("Mark");
+        } catch (Exception e) {
+            LOGGER.info("should have logged exception: {}", e.getMessage());
+        }
+
+        try {
+            doNotLogThisThrowingMethodWithOneParam("Tom");
+        } catch (Exception e) {
+            LOGGER.info("should NOT have logged exception: {}", e.getMessage());
+        }
     }
 
     @LogIt
@@ -56,5 +68,10 @@ public class LogItExample {
     private static void logThisThrowingMethod() { throw new RuntimeException("runtime exception!"); }
 
     private static void doNotLogThisThrowingMethod() { throw new RuntimeException("another runtime exception!"); }
+
+    @LogIt(logArgs = false)
+    private static void logThisThrowingMethodWithOneParamWithoutArgs(String param) { throw new RuntimeException("runtime exception: " + param); }
+
+    private static void doNotLogThisThrowingMethodWithOneParam(String param) { throw new RuntimeException("another runtime exception: " + param); }
 
 }
