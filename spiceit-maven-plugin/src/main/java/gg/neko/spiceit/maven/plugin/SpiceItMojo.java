@@ -24,6 +24,7 @@ public class SpiceItMojo extends AbstractMojo {
     @Override
     public void execute() {
         String outputDirectory = this.mavenProject.getBuild().getOutputDirectory();
+        @SuppressWarnings("unchecked")
         File[] dependencies = ((Set<Artifact>) this.mavenProject.getArtifacts()).stream()
                                                                                 .map(Artifact::getFile)
                                                                                 .toArray(File[]::new);

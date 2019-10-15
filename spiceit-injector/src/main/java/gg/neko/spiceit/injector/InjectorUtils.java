@@ -1,6 +1,6 @@
 package gg.neko.spiceit.injector;
 
-import gg.neko.spiceit.injector.exception.SpiceItReviserException;
+import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import javassist.CannotCompileException;
 import javassist.CtClass;
 import javassist.CtField;
@@ -38,7 +38,7 @@ public class InjectorUtils {
         try {
             return ctField.getType();
         } catch (NotFoundException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -48,7 +48,7 @@ public class InjectorUtils {
             ctClass.addField(ctLoggerField);
             return ctLoggerField;
         } catch (CannotCompileException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -62,7 +62,7 @@ public class InjectorUtils {
         try {
             return ctMethod.getParameterTypes();
         } catch (NotFoundException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 

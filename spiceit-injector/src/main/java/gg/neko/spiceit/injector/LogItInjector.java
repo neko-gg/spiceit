@@ -1,7 +1,7 @@
 package gg.neko.spiceit.injector;
 
 import gg.neko.spiceit.annotation.LogIt;
-import gg.neko.spiceit.injector.exception.SpiceItReviserException;
+import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -11,18 +11,17 @@ import javassist.NotFoundException;
 
 public class LogItInjector {
 
-    private LogItInjector() {}
+    private LogItInjector() { throw new UnsupportedOperationException("do not instantiate this class"); }
 
     public static void inject(LogIt logIt, CtMethod ctMethod) {
-        boolean logArgs = logIt.logArgs();
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
 
-        logEntry(ctMethod, ctLoggerField, logArgs);
-        logError(ctMethod, ctLoggerField, logArgs);
-        logExit(ctMethod, ctLoggerField, logArgs);
+        logEntry(logIt, ctMethod, ctLoggerField);
+        logError(logIt, ctMethod, ctLoggerField);
+        logExit(logIt, ctMethod, ctLoggerField);
     }
 
-    private static void logEntry(CtMethod ctMethod, CtField ctLoggerField, boolean logArgs) {
+    private static void logEntry(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(ctLoggerField.getName())
@@ -35,7 +34,7 @@ public class LogItInjector {
                      .append("method: ")
                      .append(InjectorUtils.getMethodSignature(ctMethod));
 
-        if (logArgs) {
+        if (logIt.logArgs()) {
             stringBuilder.append(", ")
                          .append("args: ")
                          .append("{}")
@@ -51,11 +50,11 @@ public class LogItInjector {
         try {
             ctMethod.insertBefore(stringBuilder.toString());
         } catch (CannotCompileException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
-    private static void logError(CtMethod ctMethod, CtField ctLoggerField, boolean logArgs) {
+    private static void logError(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(ctLoggerField.getName())
@@ -68,7 +67,7 @@ public class LogItInjector {
                      .append("method: ")
                      .append(InjectorUtils.getMethodSignature(ctMethod));
 
-        if (logArgs) {
+        if (logIt.logArgs()) {
             stringBuilder.append(", ")
                          .append("args: ")
                          .append("{}");
@@ -81,7 +80,7 @@ public class LogItInjector {
                      .append(", ")
                      .append("new java.lang.Object[]{");
 
-        if (logArgs) {
+        if (logIt.logArgs()) {
             stringBuilder.append("java.util.Arrays.toString($args)")
                          .append(", ");
         }
@@ -95,11 +94,11 @@ public class LogItInjector {
         try {
             ctMethod.addCatch(stringBuilder.toString(), getCatchExceptionTypeName());
         } catch (CannotCompileException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
-    private static void logExit(CtMethod ctMethod, CtField ctLoggerField, boolean logArgs) {
+    private static void logExit(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(ctLoggerField.getName())
@@ -112,7 +111,7 @@ public class LogItInjector {
                      .append("method: ")
                      .append(InjectorUtils.getMethodSignature(ctMethod));
 
-        if (logArgs) {
+        if (logIt.logArgs()) {
             stringBuilder.append(", ")
                          .append("args: ")
                          .append("{}");
@@ -125,7 +124,7 @@ public class LogItInjector {
                      .append(", ")
                      .append("new java.lang.Object[]{");
 
-        if (logArgs) {
+        if (logIt.logArgs()) {
             stringBuilder.append("java.util.Arrays.toString($args)")
                          .append(", ");
         }
@@ -136,7 +135,7 @@ public class LogItInjector {
         try {
             ctMethod.insertAfter(stringBuilder.toString());
         } catch (CannotCompileException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -144,7 +143,7 @@ public class LogItInjector {
         try {
             return ClassPool.getDefault().get(Throwable.class.getName());
         } catch (NotFoundException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 

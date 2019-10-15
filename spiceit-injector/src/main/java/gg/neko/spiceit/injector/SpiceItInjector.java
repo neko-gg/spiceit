@@ -1,13 +1,15 @@
 package gg.neko.spiceit.injector;
 
 import gg.neko.spiceit.annotation.LogIt;
-import gg.neko.spiceit.injector.exception.SpiceItReviserException;
+import gg.neko.spiceit.annotation.TimeIt;
+import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import gg.neko.spiceit.util.SpiceItUtils;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +50,7 @@ public class SpiceItInjector {
      */
     public static void revise(File targetDirectory, File... classPaths) {
         if (!targetDirectory.isDirectory()) {
-            throw new SpiceItReviserException("targetDirectory must be a directory");
+            throw new SpiceItInjectorException("targetDirectory must be a directory");
         }
 
         loadClassPathsInClassPool(classPaths);
@@ -69,7 +71,7 @@ public class SpiceItInjector {
             revise(ctClass);
             return ctClass.toBytecode();
         } catch (IOException | CannotCompileException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -86,7 +88,7 @@ public class SpiceItInjector {
                  .filter(SpiceItInjector::revise)
                  .forEach(ctClass -> writeClassFile(ctClass, targetDirectory));
         } catch (IOException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -123,7 +125,7 @@ public class SpiceItInjector {
             Method orderMethod = annotation.annotationType().getMethod(ORDER_METHOD_NAME);
             return (int) orderMethod.invoke(annotation);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new SpiceItReviserException("failed to retrieve order for " + annotation.annotationType().getName(), e);
+            throw new SpiceItInjectorException("failed to retrieve order for " + annotation.annotationType().getName(), e);
         }
     }
 
@@ -132,7 +134,7 @@ public class SpiceItInjector {
             LOGGER.info("Overwriting .class file for class {}", ctClass.getName());
             ctClass.writeFile(targetDirectory.getAbsolutePath());
         } catch (IOException | CannotCompileException e) {
-            throw new SpiceItReviserException("failed to overwrite .class file for " + ctClass.getName(), e);
+            throw new SpiceItInjectorException("failed to overwrite .class file for " + ctClass.getName(), e);
         }
     }
 
@@ -143,14 +145,19 @@ public class SpiceItInjector {
 
         if (annotation instanceof LogIt) {
             LogItInjector.inject((LogIt) annotation, ctMethod);
+        } else if (annotation instanceof TimeIt) {
+            TimeItInjector.inject((TimeIt) annotation, ctMethod);
         }
+
+        AnnotationsAttribute annotationsAttribute = (AnnotationsAttribute) ctMethod.getMethodInfo().getAttribute(AnnotationsAttribute.visibleTag);
+        annotationsAttribute.removeAnnotation(annotation.annotationType().getName());
     }
 
     private static Object[] getAnnotations(CtMethod ctMethod) {
         try {
             return ctMethod.getAnnotations();
         } catch (ClassNotFoundException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -162,7 +169,7 @@ public class SpiceItInjector {
         try {
             return ClassPool.getDefault().makeClass(new FileInputStream(classFile));
         } catch (IOException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
@@ -177,7 +184,7 @@ public class SpiceItInjector {
             LOGGER.debug("Adding to classpath: {}", classPath);
             ClassPool.getDefault().appendClassPath(classPath);
         } catch (NotFoundException e) {
-            throw new SpiceItReviserException(e);
+            throw new SpiceItInjectorException(e);
         }
     }
 
