@@ -1,5 +1,6 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.enumeration.LogLevel;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -32,6 +33,15 @@ public class InjectorUtils {
                              Arrays.stream(getParameterTypes(ctMethod))
                                    .map(CtClass::getName)
                                    .collect(Collectors.joining(", ", "(", ")")));
+    }
+
+    public static String logPattern(LogLevel logLevel, String loggerName, String pattern) {
+        return loggerName
+               + "."
+               + logLevel.getMethodName()
+               + "("
+               + pattern
+               + ");";
     }
 
     private static CtClass getCtFieldType(CtField ctField) {

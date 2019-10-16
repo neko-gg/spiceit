@@ -22,118 +22,43 @@ public class LogItInjector {
     }
 
     private static void logEntry(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append(ctLoggerField.getName())
-                     .append(".info(")
-                     .append("\"")
-                     .append("[ENTRY] ")
-                     .append("class: ")
-                     .append(ctMethod.getDeclaringClass().getName())
-                     .append(", ")
-                     .append("method: ")
-                     .append(InjectorUtils.getMethodSignature(ctMethod));
-
-        if (logIt.logArgs()) {
-            stringBuilder.append(", ")
-                         .append("args: ")
-                         .append("{}")
-                         .append("\"")
-                         .append(", ")
-                         .append("java.util.Arrays.toString($args)");
-        } else {
-            stringBuilder.append("\"");
-        }
-
-        stringBuilder.append(");");
-
+        String solvedPattern = PatternSolver.solve(logIt.entryPattern(), ctMethod);
+        String logStatement = InjectorUtils.logPattern(logIt.entryLogLevel(),
+                                                       ctLoggerField.getName(),
+                                                       solvedPattern);
         try {
-            ctMethod.insertBefore(stringBuilder.toString());
+            ctMethod.insertBefore(logStatement);
         } catch (CannotCompileException e) {
             throw new SpiceItInjectorException(e);
         }
     }
 
     private static void logError(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append(ctLoggerField.getName())
-                     .append(".error(")
-                     .append("\"")
-                     .append("[ERROR] ")
-                     .append("class: ")
-                     .append(ctMethod.getDeclaringClass().getName())
-                     .append(", ")
-                     .append("method: ")
-                     .append(InjectorUtils.getMethodSignature(ctMethod));
-
-        if (logIt.logArgs()) {
-            stringBuilder.append(", ")
-                         .append("args: ")
-                         .append("{}");
-        }
-
-        stringBuilder.append(", ")
-                     .append("exception: ")
-                     .append("{}")
-                     .append("\"")
-                     .append(", ")
-                     .append("new java.lang.Object[]{");
-
-        if (logIt.logArgs()) {
-            stringBuilder.append("java.util.Arrays.toString($args)")
-                         .append(", ");
-        }
-
-        stringBuilder.append("$e.getMessage()")
-                     .append(", ")
-                     .append("$e")
-                     .append("}); ")
-                     .append("throw $e;");
-
+        String solvedPattern = PatternSolver.solve(logIt.errorPattern(), ctMethod);
+        String logStatement = InjectorUtils.logPattern(logIt.errorLogLevel(),
+                                                       ctLoggerField.getName(),
+                                                       solvedPattern);
+        String logAndRethrowBlock = "{"
+                                    + logStatement
+                                    + System.lineSeparator()
+                                    + "throw $e;"
+                                    + System.lineSeparator()
+                                    + "}";
         try {
-            ctMethod.addCatch(stringBuilder.toString(), getCatchExceptionTypeName());
+            ctMethod.addCatch(logAndRethrowBlock, getCatchExceptionTypeName());
         } catch (CannotCompileException e) {
             throw new SpiceItInjectorException(e);
         }
     }
 
     private static void logExit(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append(ctLoggerField.getName())
-                     .append(".info(")
-                     .append("\"")
-                     .append("[EXIT] ")
-                     .append("class: ")
-                     .append(ctMethod.getDeclaringClass().getName())
-                     .append(", ")
-                     .append("method: ")
-                     .append(InjectorUtils.getMethodSignature(ctMethod));
-
-        if (logIt.logArgs()) {
-            stringBuilder.append(", ")
-                         .append("args: ")
-                         .append("{}");
-        }
-
-        stringBuilder.append(", ")
-                     .append("return: ")
-                     .append("{}")
-                     .append("\"")
-                     .append(", ")
-                     .append("new java.lang.Object[]{");
-
-        if (logIt.logArgs()) {
-            stringBuilder.append("java.util.Arrays.toString($args)")
-                         .append(", ");
-        }
-
-        stringBuilder.append("($w)$_")
-                     .append("});");
+        String solvedPattern = PatternSolver.solve(logIt.exitPattern(), ctMethod);
+        String logStatement = InjectorUtils.logPattern(logIt.exitLogLevel(),
+                                                       ctLoggerField.getName(),
+                                                       solvedPattern);
 
         try {
-            ctMethod.insertAfter(stringBuilder.toString());
+            ctMethod.insertAfter(logStatement);
         } catch (CannotCompileException e) {
             throw new SpiceItInjectorException(e);
         }

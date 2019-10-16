@@ -17,7 +17,9 @@ import java.util.List;
 
 public class SpiceItUtils {
 
-    private SpiceItUtils() { throw new UnsupportedOperationException(); }
+    private SpiceItUtils() {
+        throw new UnsupportedOperationException("do not instantiate this class");
+    }
 
     public static List<Class<? extends Annotation>> spiceItAnnotations() {
         return Arrays.asList(BenchIt.class,
