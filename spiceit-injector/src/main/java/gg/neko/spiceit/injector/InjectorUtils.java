@@ -13,12 +13,24 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * Provides utility methods used by {@code SpiceIt} injectors.
+ */
 public class InjectorUtils {
 
     private InjectorUtils() {
         throw new UnsupportedOperationException("do not instantiate this class");
     }
 
+    /**
+     * Finds and returns a {@link Logger} field declared in a class.
+     * If no such field is found, a new one is declared (as {@code private static final}),
+     * added to the class, and returned.
+     *
+     * @param ctClass the class to examine
+     * @return a {@link Logger} field declared in {@code ctClass},
+     * eventually just declared and added if one was not already present
+     */
     public static CtField getLoggerField(CtClass ctClass) {
         return Arrays.stream(ctClass.getDeclaredFields())
                      .filter(ctField -> Logger.class.getName().equals(getCtFieldType(ctField).getName()))
@@ -26,6 +38,15 @@ public class InjectorUtils {
                      .orElseGet(() -> addLoggerField(ctClass));
     }
 
+    /**
+     * Calculates the signature of a method.
+     * <br>
+     * For example, the method signature of {@link String#replaceAll(String, String)} would be:
+     * {@code replaceAll(java.lang.String, java.lang.String)}
+     *
+     * @param ctMethod the {@link CtMethod} of which to calculate the signature
+     * @return the signature of {@code ctMethod}
+     */
     public static String getMethodSignature(CtMethod ctMethod) {
         return String.format(Locale.US,
                              "%s%s",
@@ -35,6 +56,15 @@ public class InjectorUtils {
                                    .collect(Collectors.joining(", ", "(", ")")));
     }
 
+    /**
+     * Generates a {@code Java} statement that logs a {@link String} at a specific level.
+     *
+     * @param logLevel   the level at which to log
+     * @param loggerName the name of the {@link Logger} variable to use
+     * @param pattern    the {@link String} to log
+     * @return a {@link String} containing a {@code Java} statement that uses
+     * {@code loggerName} to log {@code pattern} at {@code logLevel}
+     */
     public static String logPattern(LogLevel logLevel, String loggerName, String pattern) {
         return loggerName
                + "."
