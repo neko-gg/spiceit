@@ -1,6 +1,7 @@
 package gg.neko.spiceit.example.maven.plugin;
 
 import gg.neko.spiceit.annotation.TimeIt;
+import gg.neko.spiceit.util.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class TimeItExample {
         }
     }
 
-    @TimeIt(logArgs = true, logReturn = true)
+    @TimeIt(logPattern = Patterns.TIMEIT_WITH_ARGS_WITH_RETURN)
     private static int timeThisMethodWithArgsWithReturn() {
         sleep();
         return 42;
@@ -56,20 +57,20 @@ public class TimeItExample {
         return 69;
     }
 
-    @TimeIt(logArgs = true)
+    @TimeIt(logPattern = Patterns.TIMEIT_WITH_ARGS)
     private static void timeThisVoidMethodWithArgsWithoutReturn() {
         sleep();
     }
 
     private static void doNotTimeThisVoidMethod() { }
 
-    @TimeIt(logArgs = true)
+    @TimeIt(logPattern = Patterns.TIMEIT_WITH_ARGS)
     private static String timeThisMethodWithOneParamWithArgs(String param) {
         sleep();
         return "Hello, " + param;
     }
 
-    @TimeIt(logReturn = true)
+    @TimeIt(logPattern = Patterns.TIMEIT_WITH_RETURN)
     private static String timeThisMethodWithOneParamWithoutArgsWithReturn(String param) {
         sleep();
         return "Well hello, " + param;
@@ -77,7 +78,7 @@ public class TimeItExample {
 
     private static String doNotTimeThisMethodWithOneParam(String param) { return "Bye, " + param; }
 
-    @TimeIt(logArgs = true)
+    @TimeIt(logPattern = Patterns.TIMEIT_WITH_ARGS)
     private static void timeThisThrowingMethodWithArgs() {
         sleep();
         throw new RuntimeException("runtime exception!");

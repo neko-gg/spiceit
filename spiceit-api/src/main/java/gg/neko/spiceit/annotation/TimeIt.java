@@ -1,5 +1,8 @@
 package gg.neko.spiceit.annotation;
 
+import gg.neko.spiceit.enumeration.LogLevel;
+import gg.neko.spiceit.util.Patterns;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,8 +14,8 @@ public @interface TimeIt {
 
     int order() default 9000;
 
-    boolean logArgs() default false;
+    String logPattern() default Patterns.TIMEIT_DEFAULT;
 
-    boolean logReturn() default false;
+    LogLevel logLevel() default LogLevel.INFO;
 
 }

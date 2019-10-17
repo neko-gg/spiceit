@@ -29,4 +29,13 @@ public class Patterns {
     public static final String LOGIT_EXIT_NO_CLASS_NO_RETURN = "[EXIT] method: ${method.signature}, args: ${method.args}";
     public static final String LOGIT_EXIT_NO_ARGS_NO_CLASS_NO_RETURN = "[EXIT] method: ${method.signature}";
 
+    public static final String TIMEIT_DEFAULT = "[TIME] [${method.time}ms] class: ${method.class.name}, method: ${method.signature}";
+    public static final String TIMEIT_WITH_ARGS = "[TIME] [${method.time}ms] class: ${method.class.name}, method: ${method.signature}, args: ${method.args}";
+    public static final String TIMEIT_WITH_RETURN = "[TIME] [${method.time}ms] class: ${method.class.name}, method: ${method.signature}, return: ${method.return}";
+    public static final String TIMEIT_WITH_ARGS_WITH_RETURN = "[TIME] [${method.time}ms] class: ${method.class.name}, method: ${method.signature}, args: ${method.args}, return: ${method.return}";
+    public static final String TIMEIT_NO_CLASS = "[TIME] [${method.time}ms] method: ${method.signature}";
+    public static final String TIMEIT_NO_CLASS_WITH_ARGS = "[TIME] [${method.time}ms] method: ${method.signature}, args: ${method.args}";
+    public static final String TIMEIT_NO_CLASS_WITH_RETURN = "[TIME] [${method.time}ms] method: ${method.signature}, return: ${method.return}";
+    public static final String TIMEIT_NO_CLASS_WITH_ARGS_WITH_RETURN = "[TIME] [${method.time}ms] method: ${method.signature}, args: ${method.args}, return: ${method.return}";
+
 }
