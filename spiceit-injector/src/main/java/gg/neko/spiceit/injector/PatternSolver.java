@@ -47,12 +47,9 @@ public class PatternSolver {
                                         .replaceAll(Pattern.quote("${method.longName}"), Matcher.quoteReplacement(ctMethod.getLongName()))
                                         .replaceAll(Pattern.quote("${method.return}"), Matcher.quoteReplacement("\" + java.lang.String.valueOf(($w)$_) + \""))
                                         .replaceAll(Pattern.quote("${method.exception.message}"), Matcher.quoteReplacement("\" + $e.getMessage() + \""))
+                                        .replaceAll(Pattern.quote("${method.args}"), Matcher.quoteReplacement("\" + java.util.Arrays.toString(java.util.Arrays.copyOfRange($args, " + argsOffset + ", ($args).length)) + \""))
                                         .replaceAll(Pattern.quote("${method.time}"), null == startTimeVariableName ? "NOT_TIMED" : Matcher.quoteReplacement("\" + (java.lang.System.currentTimeMillis() - " + startTimeVariableName + ") + \""))
                                + "\"";
-
-        solvedPattern = replaceAll(solvedPattern,
-                                   Pattern.compile(Pattern.quote("${method.args}")),
-                                   matcher -> Matcher.quoteReplacement("\" + java.util.Arrays.toString(java.util.Arrays.copyOfRange($args, " + argsOffset + ", ($args).length)) + \""));
 
         solvedPattern = replaceAll(solvedPattern,
                                    Pattern.compile("\\$\\{method.args\\[(\\d+)]}"),
