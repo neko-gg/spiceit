@@ -33,7 +33,7 @@ public class PatternSolver {
      * @param pattern               the log pattern
      * @param ctMethod              the method that placeholders refer to
      * @param startTimeVariableName the name of the variable (visible in {@code ctMethod} scope) holding the
-     *                              {@code Unix} timestamp in milliseconds at the time of {@code ctMethod} invocation.
+     *                              {@code Unix} timestamp in milliseconds at the time of {@code ctMethod} invocation
      * @param argsOffset            how many arguments to ignore (skipped from the beginning of {@code ctMethod} args)
      *                              when resolving arguments related placeholders
      * @return the resolved log pattern
