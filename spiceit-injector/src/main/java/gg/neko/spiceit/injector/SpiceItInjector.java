@@ -67,7 +67,7 @@ public class SpiceItInjector {
      */
     public static byte[] revise(byte[] classBytecode) {
         try {
-            CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(classBytecode));
+            CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(classBytecode), false);
             revise(ctClass);
             return ctClass.toBytecode();
         } catch (IOException | CannotCompileException e) {
@@ -84,6 +84,7 @@ public class SpiceItInjector {
         try {
             Files.walk(Paths.get(targetDirectory.toURI()))
                  .filter(Files::isRegularFile)
+                 .filter(path -> path.toString().endsWith(".class"))
                  .map(classFile -> makeCtClass(classFile.toFile()))
                  .filter(SpiceItInjector::revise)
                  .forEach(ctClass -> writeClassFile(ctClass, targetDirectory));
@@ -133,6 +134,7 @@ public class SpiceItInjector {
         try {
             LOGGER.info("Overwriting .class file for class {}", ctClass.getName());
             ctClass.writeFile(targetDirectory.getAbsolutePath());
+            ctClass.defrost();
         } catch (IOException | CannotCompileException e) {
             throw new SpiceItInjectorException("failed to overwrite .class file for " + ctClass.getName(), e);
         }
@@ -167,7 +169,7 @@ public class SpiceItInjector {
 
     private static CtClass makeCtClass(File classFile) {
         try {
-            return ClassPool.getDefault().makeClass(new FileInputStream(classFile));
+            return ClassPool.getDefault().makeClass(new FileInputStream(classFile), false);
         } catch (IOException e) {
             throw new SpiceItInjectorException(e);
         }
