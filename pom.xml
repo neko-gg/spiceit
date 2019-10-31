@@ -61,6 +61,7 @@
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
         <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 
         <maven-plugin-api.version>3.6.2</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
@@ -80,6 +81,7 @@
         <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
         <logback-classic.version>1.2.3</logback-classic.version>
         <junit-jupiter-api.version>5.5.2</junit-jupiter-api.version>
+        <junit-jupiter-engine.version>5.5.2</junit-jupiter-engine.version>
     </properties>
 
     <dependencyManagement>
@@ -138,6 +140,11 @@
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
                 <version>${junit-jupiter-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit-jupiter-engine.version}</version>
             </dependency>
             <!-- Test dependencies end -->
 
@@ -263,6 +270,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>${maven-install-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
                 <!-- Maven plugins end -->
             </plugins>
