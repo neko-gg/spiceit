@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,19 +76,6 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
     void shouldThrowExceptionWhenTargetDirectoryIsNotADirectory() throws URISyntaxException {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
         Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(classFile));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenClassFileCannotBeOverwritten() throws IOException, URISyntaxException {
-        File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
-        try (FileInputStream inputStream = new FileInputStream(classFile)) {
-            FileLock fileLock = inputStream.getChannel().lock(0L, Long.MAX_VALUE, true);
-            try {
-                Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(classFile.getParentFile()));
-            } finally {
-                fileLock.release();
-            }
-        }
     }
 
     @Test
