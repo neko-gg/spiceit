@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>gg.neko.spiceit</groupId>
+        <artifactId>spiceit-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spiceit-report-aggregator</artifactId>
+    <packaging>pom</packaging>
+
+    <name>SpiceIt Report Aggregator</name>
+    <description>SpiceIt module for generating aggregated reports.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>gg.neko.spiceit</groupId>
+            <artifactId>spiceit-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gg.neko.spiceit</groupId>
+            <artifactId>spiceit-injector</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gg.neko.spiceit</groupId>
+            <artifactId>spiceit-maven-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gg.neko.spiceit</groupId>
+            <artifactId>spiceit-agent</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>code-coverage</id>
+            <build>
+                <plugins>
+                    <!-- CI plugins start -->
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>report-aggregate</id>
+                                <phase/>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- CI plugins end -->
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

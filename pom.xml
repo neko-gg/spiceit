@@ -103,12 +103,17 @@
             </dependency>
             <dependency>
                 <groupId>gg.neko.spiceit</groupId>
+                <artifactId>spiceit-agent</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>gg.neko.spiceit</groupId>
                 <artifactId>spiceit-maven-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>gg.neko.spiceit</groupId>
-                <artifactId>spiceit-example</artifactId>
+                <artifactId>spiceit-example-parent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- SpiceIt dependencies end -->
@@ -396,6 +401,7 @@
         <module>spiceit-maven-plugin</module>
         <module>spiceit-agent</module>
         <module>spiceit-example-parent</module>
+        <module>spiceit-report-aggregator</module>
     </modules>
 
 </project>
