@@ -76,6 +76,9 @@
         <dependency-check-maven.version>5.2.2</dependency-check-maven.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
 
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+        <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+
         <slf4j-api.version>1.7.28</slf4j-api.version>
         <javassist.version>3.26.0-GA</javassist.version>
         <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
@@ -226,6 +229,19 @@
                 </plugin>
                 <!-- Reporting plugins end -->
 
+                <!-- CI plugins start -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>${coveralls-maven-plugin.version}</version>
+                </plugin>
+                <!-- CI plugins end -->
+
                 <!-- Maven plugins start -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -315,6 +331,30 @@
             <!-- Maven plugins end -->
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>code-coverage</id>
+            <build>
+                <plugins>
+                    <!-- CI plugins start -->
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- CI plugins end -->
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <reporting>
         <plugins>
