@@ -360,7 +360,7 @@
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <configuration>
                             <jacocoReports>
-                                <jacocoReport>${project.reporting.outputDirectory}/jacoco-aggregate/jacoco.xml</jacocoReport>
+                                <jacocoReport>${project.basedir}/spiceit-report-aggregator/target/site/jacoco-aggregate/jacoco.xml</jacocoReport>
                             </jacocoReports>
                         </configuration>
                         <executions>
