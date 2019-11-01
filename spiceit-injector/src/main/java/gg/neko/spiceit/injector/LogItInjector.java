@@ -11,7 +11,9 @@ import javassist.NotFoundException;
 
 public class LogItInjector {
 
-    private LogItInjector() { throw new UnsupportedOperationException("do not instantiate this class"); }
+    private LogItInjector() {
+        throw new UnsupportedOperationException("do not instantiate this class");
+    }
 
     public static void inject(LogIt logIt, CtMethod ctMethod) {
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());

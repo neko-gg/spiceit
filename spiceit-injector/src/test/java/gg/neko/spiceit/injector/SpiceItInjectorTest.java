@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.tools.JavaCompiler;
-import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,33 +14,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
 
-class SpiceItInjectorTest {
-
-    private static final String LOG_IT_TEST_CLASS = "LogItTestClass.class";
-    private static final String TIME_IT_TEST_CLASS = "TimeItTestClass.class";
-    private static final String LOG_IT_TIME_IT_TEST_CLASS = "LogItTimeItTestClass.class";
+class SpiceItInjectorTest extends AbstractInjectorTest {
 
     @BeforeEach
-    void compileResources() {
-        JavaCompiler systemJavaCompiler = ToolProvider.getSystemJavaCompiler();
-
-        Stream.of(LOG_IT_TEST_CLASS, TIME_IT_TEST_CLASS, LOG_IT_TIME_IT_TEST_CLASS)
-              .map(pathString -> pathString.replaceFirst("(.*)\\.class", "$1.java"))
-              .map(pathString -> Assertions.assertDoesNotThrow(() -> getPath(pathString)))
-              .map(Path::toString)
-              .forEach(pathString -> {
-                  systemJavaCompiler.run(System.in, System.out, System.err, pathString);
-                  Path compiledPath = Paths.get(pathString.replaceFirst("(.*)\\.java", "$1.class"));
-                  Assertions.assertTrue(Files.exists(compiledPath));
-              });
+    void doCompileResources() {
+        compileResources();
     }
 
     @Test
@@ -138,13 +119,6 @@ class SpiceItInjectorTest {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
         File invalidFile = new File("invalid-file.jar");
         Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(classFile.getParentFile(), invalidFile));
-    }
-
-    private Path getPath(String resourceName) throws URISyntaxException {
-        URL compiledUrl = SpiceItInjectorTest.class.getClassLoader().getResource(resourceName);
-        Assertions.assertNotNull(compiledUrl);
-        URI compiledUri = compiledUrl.toURI();
-        return Paths.get(compiledUri);
     }
 
 }
