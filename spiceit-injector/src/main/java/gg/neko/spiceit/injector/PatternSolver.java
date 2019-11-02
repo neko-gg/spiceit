@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
  */
 public class PatternSolver {
 
+    private static final String TIMING_UNAVAILABLE = "\"TIMING_UNAVAILABLE\"";
+
     private PatternSolver() {
         throw new UnsupportedOperationException("do not instantiate this class");
     }
@@ -24,21 +26,20 @@ public class PatternSolver {
      * @see #solve(String, CtMethod, String, int)
      */
     public static String solve(String pattern, CtMethod ctMethod) {
-        return solve(pattern, ctMethod, null, 0);
+        return solve(pattern, ctMethod, TIMING_UNAVAILABLE, 0);
     }
 
     /**
      * Resolves placeholders in a log pattern.
      *
-     * @param pattern               the log pattern
-     * @param ctMethod              the method that placeholders refer to
-     * @param startTimeVariableName the name of the variable (visible in {@code ctMethod} scope) holding the
-     *                              {@code Unix} timestamp in milliseconds at the time of {@code ctMethod} invocation
-     * @param argsOffset            how many arguments to ignore (skipped from the beginning of {@code ctMethod} args)
-     *                              when resolving arguments related placeholders
+     * @param pattern         the log pattern
+     * @param ctMethod        the method that placeholders refer to
+     * @param timeReplacement the replacement {@code Java} code for {@code ${method.time}}
+     * @param argsOffset      how many arguments to ignore (skipped from the beginning of {@code ctMethod} args)
+     *                        when resolving arguments related placeholders
      * @return the resolved log pattern
      */
-    public static String solve(String pattern, CtMethod ctMethod, String startTimeVariableName, int argsOffset) {
+    public static String solve(String pattern, CtMethod ctMethod, String timeReplacement, int argsOffset) {
         String solvedPattern = "\""
                                + pattern.replaceAll(Pattern.quote("${method.class.name}"), Matcher.quoteReplacement(ctMethod.getDeclaringClass().getName()))
                                         .replaceAll(Pattern.quote("${method.class.simpleName}"), Matcher.quoteReplacement(ctMethod.getDeclaringClass().getSimpleName()))
@@ -48,7 +49,7 @@ public class PatternSolver {
                                         .replaceAll(Pattern.quote("${method.return}"), Matcher.quoteReplacement("\" + java.lang.String.valueOf(($w)$_) + \""))
                                         .replaceAll(Pattern.quote("${method.exception.message}"), Matcher.quoteReplacement("\" + $e.getMessage() + \""))
                                         .replaceAll(Pattern.quote("${method.args}"), Matcher.quoteReplacement("\" + java.util.Arrays.toString(java.util.Arrays.copyOfRange($args, " + argsOffset + ", ($args).length)) + \""))
-                                        .replaceAll(Pattern.quote("${method.time}"), null == startTimeVariableName ? "NOT_TIMED" : Matcher.quoteReplacement("\" + (java.lang.System.currentTimeMillis() - " + startTimeVariableName + ") + \""))
+                                        .replaceAll(Pattern.quote("${method.time}"), Matcher.quoteReplacement("\" + " + timeReplacement + " + \""))
                                + "\"";
 
         solvedPattern = replaceAll(solvedPattern,

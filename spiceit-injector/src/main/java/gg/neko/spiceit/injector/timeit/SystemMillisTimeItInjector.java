@@ -17,7 +17,7 @@ public class SystemMillisTimeItInjector implements TimeItInjector {
     public void inject(TimeIt timeIt, CtMethod ctMethod) {
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
 
-        String solvedPattern = PatternSolver.solve(timeIt.logPattern(), ctMethod, "$1", 1);
+        String solvedPattern = PatternSolver.solve(timeIt.logPattern(), ctMethod, "(java.lang.System.currentTimeMillis() - $1)", 1);
         SystemMillisTimeItInjector.delegateCtMethod(ctMethod);
         SystemMillisTimeItInjector.timeCtMethod(timeIt, ctMethod, solvedPattern, ctLoggerField);
     }

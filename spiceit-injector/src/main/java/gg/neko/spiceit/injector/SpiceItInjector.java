@@ -123,6 +123,21 @@ public class SpiceItInjector {
         return true;
     }
 
+    private void applyAnnotation(Annotation annotation, CtMethod ctMethod) {
+        LOGGER.info("Injecting {} in method {}",
+                    annotation.annotationType().getSimpleName(),
+                    InjectorUtils.getMethodSignature(ctMethod));
+
+        if (annotation instanceof LogIt) {
+            this.logItInjector.inject((LogIt) annotation, ctMethod);
+        } else if (annotation instanceof TimeIt) {
+            this.timeItInjector.inject((TimeIt) annotation, ctMethod);
+        }
+
+        AnnotationsAttribute annotationsAttribute = (AnnotationsAttribute) ctMethod.getMethodInfo().getAttribute(AnnotationsAttribute.visibleTag);
+        annotationsAttribute.removeAnnotation(annotation.annotationType().getName());
+    }
+
     private static boolean hasAnySpiceItAnnotation(CtClass ctClass) {
         return Arrays.stream(ctClass.getDeclaredMethods())
                      .flatMap(ctMethod -> Arrays.stream(getAnnotations(ctMethod)))
@@ -147,21 +162,6 @@ public class SpiceItInjector {
         } catch (IOException | CannotCompileException e) {
             throw new SpiceItInjectorException("failed to overwrite .class file for " + ctClass.getName(), e);
         }
-    }
-
-    private void applyAnnotation(Annotation annotation, CtMethod ctMethod) {
-        LOGGER.info("Injecting {} in method {}",
-                    annotation.annotationType().getSimpleName(),
-                    InjectorUtils.getMethodSignature(ctMethod));
-
-        if (annotation instanceof LogIt) {
-            this.logItInjector.inject((LogIt) annotation, ctMethod);
-        } else if (annotation instanceof TimeIt) {
-            this.timeItInjector.inject((TimeIt) annotation, ctMethod);
-        }
-
-        AnnotationsAttribute annotationsAttribute = (AnnotationsAttribute) ctMethod.getMethodInfo().getAttribute(AnnotationsAttribute.visibleTag);
-        annotationsAttribute.removeAnnotation(annotation.annotationType().getName());
     }
 
     private static Object[] getAnnotations(CtMethod ctMethod) {
