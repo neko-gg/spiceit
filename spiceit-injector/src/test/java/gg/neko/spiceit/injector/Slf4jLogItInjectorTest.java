@@ -1,5 +1,6 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import gg.neko.spiceit.injector.logit.LogItInjectorType;
 import javassist.CannotCompileException;
 import org.junit.jupiter.api.Assertions;
@@ -12,12 +13,16 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 class Slf4jLogItInjectorTest extends AbstractInjectorTest {
 
+    private static SpiceItInjector spiceItInjector;
+
     @BeforeAll
     static void mockLogger() throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
-        SpiceItInjector spiceItInjector = getDefaultSpiceItInjectorBuilder().logItInjector(LogItInjectorType.SLF4J.getLogItInjector()).build();
+        spiceItInjector = getDefaultSpiceItInjectorBuilder().logItInjector(LogItInjectorType.SLF4J.getLogItInjector()).build();
         setUpMockLoggerAndTestInstance(spiceItInjector, LOG_IT_TEST_CLASS);
     }
 
@@ -52,6 +57,30 @@ class Slf4jLogItInjectorTest extends AbstractInjectorTest {
         testMethod.invoke(testInstance, 42);
 
         Mockito.verifyNoInteractions(mockLogger);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEntryStatementCannotBeCompiled() throws IOException, URISyntaxException {
+        Path compiledPath = getPath(LOG_IT_INVALID_ENTRY_TEST_CLASS);
+        byte[] originalBytes = Files.readAllBytes(compiledPath);
+
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> spiceItInjector.revise(originalBytes));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenErrorStatementCannotBeCompiled() throws IOException, URISyntaxException {
+        Path compiledPath = getPath(LOG_IT_INVALID_ERROR_TEST_CLASS);
+        byte[] originalBytes = Files.readAllBytes(compiledPath);
+
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> spiceItInjector.revise(originalBytes));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenExitStatementCannotBeCompiled() throws IOException, URISyntaxException {
+        Path compiledPath = getPath(LOG_IT_INVALID_EXIT_TEST_CLASS);
+        byte[] originalBytes = Files.readAllBytes(compiledPath);
+
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> spiceItInjector.revise(originalBytes));
     }
 
 }

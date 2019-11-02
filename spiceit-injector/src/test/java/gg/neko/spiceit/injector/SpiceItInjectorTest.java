@@ -114,7 +114,7 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
     void shouldThrowExceptionWhenAnnotationCannotBeFound() throws IOException, URISyntaxException, NotFoundException {
         Path compiledPath = getPath(LOG_IT_TEST_CLASS);
         byte[] originalBytes = Files.readAllBytes(compiledPath);
-        CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(originalBytes));
+        CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(originalBytes), false);
         ConstPool constPool = ctClass.getClassFile().getConstPool();
 
         AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
