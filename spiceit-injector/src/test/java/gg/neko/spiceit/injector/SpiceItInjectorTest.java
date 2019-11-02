@@ -127,13 +127,4 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
         Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(ctClass.toBytecode()));
     }
 
-    @Test
-    void shouldThrowExceptionWhenClassFileCannotBeOverwritten() throws URISyntaxException {
-        File parentFile = getPath(LOG_IT_TEST_CLASS).toFile().getParentFile();
-        File spiedClass = Mockito.spy(parentFile);
-        Assertions.assertDoesNotThrow(() -> Mockito.doReturn(parentFile.toURI()).when(spiedClass).toURI());
-        Assertions.assertDoesNotThrow(() -> Mockito.doReturn("...invalid-path...").when(spiedClass).getAbsolutePath());
-        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(spiedClass));
-    }
-
 }
