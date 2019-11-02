@@ -1,6 +1,10 @@
 package gg.neko.spiceit.maven.plugin;
 
 import gg.neko.spiceit.injector.SpiceItInjector;
+import gg.neko.spiceit.injector.logit.LogItInjector;
+import gg.neko.spiceit.injector.logit.LogItInjectorType;
+import gg.neko.spiceit.injector.timeit.TimeItInjector;
+import gg.neko.spiceit.injector.timeit.TimeItInjectorType;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -29,7 +33,19 @@ public class SpiceItMojo extends AbstractMojo {
                                                                                 .map(Artifact::getFile)
                                                                                 .toArray(File[]::new);
 
-        SpiceItInjector.revise(new File(outputDirectory), dependencies);
+        SpiceItInjector.builder()
+                       .logItInjector(getLogItInjector())
+                       .timeItInjector(getTimeItInjector())
+                       .build()
+                       .revise(new File(outputDirectory), dependencies);
+    }
+
+    private LogItInjector getLogItInjector() {
+        return LogItInjectorType.SLF4J.getLogItInjector();
+    }
+
+    private TimeItInjector getTimeItInjector() {
+        return TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector();
     }
 
 }

@@ -3,6 +3,8 @@ package gg.neko.spiceit.injector;
 import gg.neko.spiceit.annotation.LogIt;
 import gg.neko.spiceit.annotation.TimeIt;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
+import gg.neko.spiceit.injector.logit.LogItInjector;
+import gg.neko.spiceit.injector.timeit.TimeItInjector;
 import gg.neko.spiceit.util.SpiceItUtils;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -32,11 +34,18 @@ import java.util.List;
 public class SpiceItInjector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpiceItInjector.class);
-
     private static final String ORDER_METHOD_NAME = "order";
 
-    private SpiceItInjector() {
-        throw new UnsupportedOperationException("do not instantiate this class");
+    private LogItInjector logItInjector;
+    private TimeItInjector timeItInjector;
+
+    private SpiceItInjector(Builder builder) {
+        this.logItInjector = builder.logItInjector;
+        this.timeItInjector = builder.timeItInjector;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -48,7 +57,7 @@ public class SpiceItInjector {
      * @param classPaths      {@code .jar} files, or directories containing {@code .class} files, to add to the classpath
      *                        to resolve dependencies.
      */
-    public static void revise(File targetDirectory, File... classPaths) {
+    public void revise(File targetDirectory, File... classPaths) {
         if (!targetDirectory.isDirectory()) {
             throw new SpiceItInjectorException("targetDirectory must be a directory");
         }
@@ -65,7 +74,7 @@ public class SpiceItInjector {
      * @param classBytecode {@code .class} file bytecode as a byte array
      * @return the modified bytecode
      */
-    public static byte[] revise(byte[] classBytecode) {
+    public byte[] revise(byte[] classBytecode) {
         try {
             CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(classBytecode), false);
             revise(ctClass);
@@ -80,13 +89,13 @@ public class SpiceItInjector {
      *
      * @param targetDirectory directory containing {@code .class} files to revise.
      */
-    private static void revise(File targetDirectory) {
+    private void revise(File targetDirectory) {
         try {
             Files.walk(Paths.get(targetDirectory.toURI()))
                  .filter(Files::isRegularFile)
                  .filter(path -> path.toString().endsWith(".class"))
                  .map(classFile -> makeCtClass(classFile.toFile()))
-                 .filter(SpiceItInjector::revise)
+                 .filter(this::revise)
                  .forEach(ctClass -> writeClassFile(ctClass, targetDirectory));
         } catch (IOException e) {
             throw new SpiceItInjectorException(e);
@@ -99,7 +108,7 @@ public class SpiceItInjector {
      * @param ctClass the {@link CtClass} to revise
      * @return whether the {@link CtClass} was modified
      */
-    private static boolean revise(CtClass ctClass) {
+    private boolean revise(CtClass ctClass) {
         if (!hasAnySpiceItAnnotation(ctClass)) { return false; }
 
         LOGGER.info("Spicing class {}", ctClass.getName());
@@ -140,15 +149,15 @@ public class SpiceItInjector {
         }
     }
 
-    private static void applyAnnotation(Annotation annotation, CtMethod ctMethod) {
+    private void applyAnnotation(Annotation annotation, CtMethod ctMethod) {
         LOGGER.info("Injecting {} in method {}",
                     annotation.annotationType().getSimpleName(),
                     InjectorUtils.getMethodSignature(ctMethod));
 
         if (annotation instanceof LogIt) {
-            LogItInjector.inject((LogIt) annotation, ctMethod);
+            this.logItInjector.inject((LogIt) annotation, ctMethod);
         } else if (annotation instanceof TimeIt) {
-            TimeItInjector.inject((TimeIt) annotation, ctMethod);
+            this.timeItInjector.inject((TimeIt) annotation, ctMethod);
         }
 
         AnnotationsAttribute annotationsAttribute = (AnnotationsAttribute) ctMethod.getMethodInfo().getAttribute(AnnotationsAttribute.visibleTag);
@@ -188,6 +197,29 @@ public class SpiceItInjector {
         } catch (NotFoundException e) {
             throw new SpiceItInjectorException(e);
         }
+    }
+
+    public static class Builder {
+
+        private LogItInjector logItInjector;
+        private TimeItInjector timeItInjector;
+
+        private Builder() { }
+
+        public Builder logItInjector(LogItInjector logItInjector) {
+            this.logItInjector = logItInjector;
+            return this;
+        }
+
+        public Builder timeItInjector(TimeItInjector timeItInjector) {
+            this.timeItInjector = timeItInjector;
+            return this;
+        }
+
+        public SpiceItInjector build() {
+            return new SpiceItInjector(this);
+        }
+
     }
 
 }

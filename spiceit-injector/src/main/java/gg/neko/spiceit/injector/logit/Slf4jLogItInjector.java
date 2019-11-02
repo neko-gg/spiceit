@@ -1,26 +1,22 @@
-package gg.neko.spiceit.injector;
+package gg.neko.spiceit.injector.logit;
 
 import gg.neko.spiceit.annotation.LogIt;
+import gg.neko.spiceit.injector.InjectorUtils;
+import gg.neko.spiceit.injector.PatternSolver;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
-import javassist.NotFoundException;
 
-public class LogItInjector {
+public class Slf4jLogItInjector implements LogItInjector {
 
-    private LogItInjector() {
-        throw new UnsupportedOperationException("do not instantiate this class");
-    }
-
-    public static void inject(LogIt logIt, CtMethod ctMethod) {
+    @Override
+    public void inject(LogIt logIt, CtMethod ctMethod) {
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
 
-        logEntry(logIt, ctMethod, ctLoggerField);
-        logError(logIt, ctMethod, ctLoggerField);
-        logExit(logIt, ctMethod, ctLoggerField);
+        Slf4jLogItInjector.logEntry(logIt, ctMethod, ctLoggerField);
+        Slf4jLogItInjector.logError(logIt, ctMethod, ctLoggerField);
+        Slf4jLogItInjector.logExit(logIt, ctMethod, ctLoggerField);
     }
 
     private static void logEntry(LogIt logIt, CtMethod ctMethod, CtField ctLoggerField) {
@@ -47,7 +43,7 @@ public class LogItInjector {
                                     + System.lineSeparator()
                                     + "}";
         try {
-            ctMethod.addCatch(logAndRethrowBlock, getCatchExceptionTypeName());
+            ctMethod.addCatch(logAndRethrowBlock, InjectorUtils.getCatchExceptionTypeName());
         } catch (CannotCompileException e) {
             throw new SpiceItInjectorException(e);
         }
@@ -62,14 +58,6 @@ public class LogItInjector {
         try {
             ctMethod.insertAfter(logStatement);
         } catch (CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
-        }
-    }
-
-    private static CtClass getCatchExceptionTypeName() {
-        try {
-            return ClassPool.getDefault().get(Throwable.class.getName());
-        } catch (NotFoundException e) {
             throw new SpiceItInjectorException(e);
         }
     }

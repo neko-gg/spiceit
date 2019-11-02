@@ -9,8 +9,6 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +16,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 class SpiceItInjectorTest extends AbstractInjectorTest {
+
+    private final SpiceItInjector spiceItInjector;
+
+    SpiceItInjectorTest() {
+        this.spiceItInjector = getDefaultSpiceItInjectorBuilder().build();
+    }
 
     @BeforeEach
     void doCompileResources() {
@@ -30,7 +34,7 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
         byte[] originalBytes = Files.readAllBytes(compiledPath);
         File compiledFile = compiledPath.toFile();
 
-        SpiceItInjector.revise(compiledFile.getParentFile());
+        this.spiceItInjector.revise(compiledFile.getParentFile());
 
         byte[] spicedBytes = Files.readAllBytes(compiledPath);
         Assertions.assertNotEquals(originalBytes, spicedBytes);
@@ -41,41 +45,21 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
         Path compiledPath = getPath(LOG_IT_TEST_CLASS);
         byte[] originalBytes = Files.readAllBytes(compiledPath);
 
-        byte[] spicedBytes = SpiceItInjector.revise(originalBytes);
+        byte[] spicedBytes = this.spiceItInjector.revise(originalBytes);
         Assertions.assertNotEquals(originalBytes, spicedBytes);
-    }
-
-    @Test
-    void constructorShouldNotBeAccessible() throws ReflectiveOperationException {
-        Constructor<SpiceItInjector> declaredSpiceItConstructor = SpiceItInjector.class.getDeclaredConstructor();
-        Assertions.assertFalse(declaredSpiceItConstructor.isAccessible());
     }
 
     @Test
     void shouldAppendClassPathIfProvided() throws URISyntaxException {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
-        SpiceItInjector.revise(classFile.getParentFile(), classFile.getParentFile().getParentFile());
-        Assertions.assertDoesNotThrow(() -> SpiceItInjector.revise(classFile.getParentFile(), classFile.getParentFile().getParentFile()));
-    }
-
-    @Test
-    void shouldThrowExceptionWhenInstantiatedWithReflection() throws ReflectiveOperationException {
-        Constructor<SpiceItInjector> declaredSpiceItConstructor = SpiceItInjector.class.getDeclaredConstructor();
-        declaredSpiceItConstructor.setAccessible(true);
-        Assertions.assertThrows(InvocationTargetException.class, declaredSpiceItConstructor::newInstance);
-
-        try {
-            declaredSpiceItConstructor.newInstance();
-        } catch (InvocationTargetException e) {
-            Assertions.assertNotNull(e.getCause());
-            Assertions.assertEquals(UnsupportedOperationException.class, e.getCause().getClass());
-        }
+        this.spiceItInjector.revise(classFile.getParentFile(), classFile.getParentFile().getParentFile());
+        Assertions.assertDoesNotThrow(() -> this.spiceItInjector.revise(classFile.getParentFile(), classFile.getParentFile().getParentFile()));
     }
 
     @Test
     void shouldThrowExceptionWhenTargetDirectoryIsNotADirectory() throws URISyntaxException {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
-        Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(classFile));
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(classFile));
     }
 
     @Test
@@ -83,12 +67,12 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
         File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.isDirectory()).thenReturn(true);
         Mockito.when(mockFile.toURI()).thenReturn(URI.create("file:///invalid/uri"));
-        Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(mockFile));
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(mockFile));
     }
 
     @Test
     void shouldThrowExceptionWhenClassBytecodeIsInvalid() {
-        Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(new byte[0]));
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(new byte[0]));
     }
 
     @Test
@@ -96,14 +80,14 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
         FileOutputStream fileOutputStream = new FileOutputStream(classFile);
         fileOutputStream.write("invalid-class-file".getBytes(StandardCharsets.UTF_8));
-        Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(classFile.getParentFile()));
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(classFile.getParentFile()));
     }
 
     @Test
     void shouldThrowExceptionWhenClassPathIsInvalid() throws URISyntaxException {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
         File invalidFile = new File("invalid-file.jar");
-        Assertions.assertThrows(SpiceItInjectorException.class, () -> SpiceItInjector.revise(classFile.getParentFile(), invalidFile));
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(classFile.getParentFile(), invalidFile));
     }
 
 }

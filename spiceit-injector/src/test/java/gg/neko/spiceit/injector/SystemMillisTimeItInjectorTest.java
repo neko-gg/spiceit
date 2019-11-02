@@ -1,5 +1,6 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.injector.timeit.TimeItInjectorType;
 import javassist.CannotCompileException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -8,16 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 
-class TimeItInjectorTest extends AbstractInjectorTest {
+class SystemMillisTimeItInjectorTest extends AbstractInjectorTest {
 
     @BeforeAll
     static void mockLogger() throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
-        setUpMockLoggerAndTestInstance(TIME_IT_TEST_CLASS);
+        SpiceItInjector spiceItInjector = getDefaultSpiceItInjectorBuilder().timeItInjector(TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector()).build();
+        setUpMockLoggerAndTestInstance(spiceItInjector, TIME_IT_TEST_CLASS);
     }
 
     @BeforeEach
@@ -49,26 +50,6 @@ class TimeItInjectorTest extends AbstractInjectorTest {
         testMethod.invoke(testInstance, 42);
 
         Mockito.verifyNoInteractions(mockLogger);
-    }
-
-    @Test
-    void constructorShouldNotBeAccessible() throws ReflectiveOperationException {
-        Constructor<TimeItInjector> declaredTimeItConstructor = TimeItInjector.class.getDeclaredConstructor();
-        Assertions.assertFalse(declaredTimeItConstructor.isAccessible());
-    }
-
-    @Test
-    void shouldThrowExceptionWhenInstantiatedWithReflection() throws ReflectiveOperationException {
-        Constructor<TimeItInjector> declaredTimeItConstructor = TimeItInjector.class.getDeclaredConstructor();
-        declaredTimeItConstructor.setAccessible(true);
-        Assertions.assertThrows(InvocationTargetException.class, declaredTimeItConstructor::newInstance);
-
-        try {
-            declaredTimeItConstructor.newInstance();
-        } catch (InvocationTargetException e) {
-            Assertions.assertNotNull(e.getCause());
-            Assertions.assertEquals(UnsupportedOperationException.class, e.getCause().getClass());
-        }
     }
 
 }

@@ -1,6 +1,8 @@
-package gg.neko.spiceit.injector;
+package gg.neko.spiceit.injector.timeit;
 
 import gg.neko.spiceit.annotation.TimeIt;
+import gg.neko.spiceit.injector.InjectorUtils;
+import gg.neko.spiceit.injector.PatternSolver;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import javassist.CannotCompileException;
 import javassist.CtClass;
@@ -9,16 +11,15 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
-public class TimeItInjector {
+public class SystemMillisTimeItInjector implements TimeItInjector {
 
-    private TimeItInjector() { throw new UnsupportedOperationException("do not instantiate this class"); }
-
-    public static void inject(TimeIt timeIt, CtMethod ctMethod) {
+    @Override
+    public void inject(TimeIt timeIt, CtMethod ctMethod) {
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
 
         String solvedPattern = PatternSolver.solve(timeIt.logPattern(), ctMethod, "$1", 1);
-        delegateCtMethod(ctMethod);
-        timeCtMethod(timeIt, ctMethod, solvedPattern, ctLoggerField);
+        SystemMillisTimeItInjector.delegateCtMethod(ctMethod);
+        SystemMillisTimeItInjector.timeCtMethod(timeIt, ctMethod, solvedPattern, ctLoggerField);
     }
 
     private static void delegateCtMethod(CtMethod ctMethod) {

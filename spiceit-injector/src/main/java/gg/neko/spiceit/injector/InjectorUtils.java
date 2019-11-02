@@ -3,6 +3,7 @@ package gg.neko.spiceit.injector;
 import gg.neko.spiceit.enumeration.LogLevel;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
 import javassist.CannotCompileException;
+import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
@@ -72,6 +73,14 @@ public class InjectorUtils {
                + "("
                + pattern
                + ");";
+    }
+
+    public static CtClass getCatchExceptionTypeName() {
+        try {
+            return ClassPool.getDefault().get(Throwable.class.getName());
+        } catch (NotFoundException e) {
+            throw new SpiceItInjectorException(e);
+        }
     }
 
     private static CtClass getCtFieldType(CtField ctField) {

@@ -1,5 +1,7 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.injector.logit.LogItInjectorType;
+import gg.neko.spiceit.injector.timeit.TimeItInjectorType;
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -37,6 +39,12 @@ abstract class AbstractInjectorTest {
     static Logger mockLogger = Mockito.mock(Logger.class);
     static Object testInstance;
 
+    static SpiceItInjector.Builder getDefaultSpiceItInjectorBuilder() {
+        return SpiceItInjector.builder()
+                              .logItInjector(LogItInjectorType.SLF4J.getLogItInjector())
+                              .timeItInjector(TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector());
+    }
+
     static void compileResources() {
         JavaCompiler systemJavaCompiler = ToolProvider.getSystemJavaCompiler();
 
@@ -51,12 +59,12 @@ abstract class AbstractInjectorTest {
               });
     }
 
-    static void setUpMockLoggerAndTestInstance(String testClassFileName) throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+    static void setUpMockLoggerAndTestInstance(SpiceItInjector spiceItInjector, String testClassFileName) throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
         compileResources();
 
         Path classPath = getPath(testClassFileName);
         File classFile = classPath.toFile();
-        SpiceItInjector.revise(classFile.getParentFile());
+        spiceItInjector.revise(classFile.getParentFile());
 
         CtClass ctClass = ClassPool.getDefault().makeClass(new FileInputStream(classFile));
 
