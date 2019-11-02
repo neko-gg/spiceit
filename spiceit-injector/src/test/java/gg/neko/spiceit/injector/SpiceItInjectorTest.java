@@ -1,11 +1,21 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.annotation.LogIt;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.annotation.Annotation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -88,6 +98,42 @@ class SpiceItInjectorTest extends AbstractInjectorTest {
         File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
         File invalidFile = new File("invalid-file.jar");
         Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(classFile.getParentFile(), invalidFile));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenSpiceItAnnotationIsMissingOrderMethod() throws URISyntaxException, NotFoundException, CannotCompileException {
+        CtClass ctClass = ClassPool.getDefault().get(LogIt.class.getName());
+        CtMethod ctMethod = ctClass.getDeclaredMethod("order");
+        ctClass.removeMethod(ctMethod);
+        File classFile = getPath(LOG_IT_TEST_CLASS).toFile();
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(classFile.getParentFile()));
+        ctClass.addMethod(ctMethod);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenAnnotationCannotBeFound() throws IOException, URISyntaxException, NotFoundException {
+        Path compiledPath = getPath(LOG_IT_TEST_CLASS);
+        byte[] originalBytes = Files.readAllBytes(compiledPath);
+        CtClass ctClass = ClassPool.getDefault().makeClass(new ByteArrayInputStream(originalBytes));
+        ConstPool constPool = ctClass.getClassFile().getConstPool();
+
+        AnnotationsAttribute annotationsAttribute = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
+        Annotation annotation = new Annotation("invalid-annotation", constPool);
+        annotationsAttribute.addAnnotation(annotation);
+
+        CtMethod ctMethod = ctClass.getDeclaredMethod(TEST_METHOD);
+        ctMethod.getMethodInfo().addAttribute(annotationsAttribute);
+
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(ctClass.toBytecode()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenClassFileCannotBeOverwritten() throws URISyntaxException {
+        File parentFile = getPath(LOG_IT_TEST_CLASS).toFile().getParentFile();
+        File spiedClass = Mockito.spy(parentFile);
+        Assertions.assertDoesNotThrow(() -> Mockito.doReturn(parentFile.toURI()).when(spiedClass).toURI());
+        Assertions.assertDoesNotThrow(() -> Mockito.doReturn("...invalid-path...").when(spiedClass).getAbsolutePath());
+        Assertions.assertThrows(SpiceItInjectorException.class, () -> this.spiceItInjector.revise(spiedClass));
     }
 
 }
