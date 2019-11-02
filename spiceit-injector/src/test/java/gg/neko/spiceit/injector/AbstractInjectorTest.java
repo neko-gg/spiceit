@@ -35,6 +35,7 @@ abstract class AbstractInjectorTest {
     static final String LOG_IT_INVALID_ENTRY_TEST_CLASS = "invalid/LogItInvalidEntryTestClass.class";
     static final String LOG_IT_INVALID_ERROR_TEST_CLASS = "invalid/LogItInvalidErrorTestClass.class";
     static final String LOG_IT_INVALID_EXIT_TEST_CLASS = "invalid/LogItInvalidExitTestClass.class";
+    static final String TIME_IT_INVALID_PATTERN_TEST_CLASS = "invalid/TimeItInvalidPatternTestClass.class";
 
     static final String TEST_METHOD = "testMethod";
     static final String TEST_EXCEPTION_METHOD = "testExceptionMethod";
@@ -57,7 +58,8 @@ abstract class AbstractInjectorTest {
                   LOG_IT_TIME_IT_TEST_CLASS,
                   LOG_IT_INVALID_ENTRY_TEST_CLASS,
                   LOG_IT_INVALID_ERROR_TEST_CLASS,
-                  LOG_IT_INVALID_EXIT_TEST_CLASS)
+                  LOG_IT_INVALID_EXIT_TEST_CLASS,
+                  TIME_IT_INVALID_PATTERN_TEST_CLASS)
               .map(pathString -> pathString.replaceFirst("(.*)\\.class", "$1.java"))
               .map(pathString -> Assertions.assertDoesNotThrow(() -> getPath(pathString)))
               .map(Path::toString)
