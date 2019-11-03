@@ -7,8 +7,8 @@ A collection of nice, easy to use features to make your code _spicier_.
 [![GitHub](https://img.shields.io/github/license/neko-gg/spiceit)](LICENSE.txt)
 [![nyan](https://img.shields.io/badge/nyancat-approved-ff69b4.svg?style=flat)](http://www.nyan.cat/)
 
-This class:
-![example class](resources/example-class.png?raw=true)
+With SpiceIt, this class:
+![example class](resources/example-class.gif?raw=true)
 
-Produces this output:
+produces this output:
 ![example output](resources/example-output.png?raw=true)
