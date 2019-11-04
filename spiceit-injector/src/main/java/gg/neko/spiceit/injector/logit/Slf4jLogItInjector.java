@@ -8,8 +8,14 @@ import javassist.CannotCompileException;
 import javassist.CtField;
 import javassist.CtMethod;
 
+/**
+ * A {@link LogItInjector} implementation that uses {@link org.slf4j.Logger}.
+ */
 public class Slf4jLogItInjector implements LogItInjector {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void inject(LogIt logIt, CtMethod ctMethod) {
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
