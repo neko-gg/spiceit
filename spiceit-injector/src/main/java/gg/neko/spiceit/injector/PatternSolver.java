@@ -41,7 +41,8 @@ public class PatternSolver {
      */
     public static String solve(String pattern, CtMethod ctMethod, String timeReplacement, int argsOffset) {
         String solvedPattern = "\""
-                               + pattern.replaceAll(Pattern.quote("${method.class.name}"), Matcher.quoteReplacement(ctMethod.getDeclaringClass().getName()))
+                               + pattern.replaceAll(Pattern.quote("\""), Matcher.quoteReplacement("\\\""))
+                                        .replaceAll(Pattern.quote("${method.class.name}"), Matcher.quoteReplacement(ctMethod.getDeclaringClass().getName()))
                                         .replaceAll(Pattern.quote("${method.class.simpleName}"), Matcher.quoteReplacement(ctMethod.getDeclaringClass().getSimpleName()))
                                         .replaceAll(Pattern.quote("${method.name}"), Matcher.quoteReplacement(ctMethod.getName()))
                                         .replaceAll(Pattern.quote("${method.signature}"), Matcher.quoteReplacement(InjectorUtils.getMethodSignature(ctMethod)))
