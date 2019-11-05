@@ -11,8 +11,14 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
+/**
+ * A {@link TimeItInjector} implementation that uses {@link System#currentTimeMillis()}.
+ */
 public class SystemMillisTimeItInjector implements TimeItInjector {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void inject(TimeIt timeIt, CtMethod ctMethod) {
         CtField ctLoggerField = InjectorUtils.getLoggerField(ctMethod.getDeclaringClass());
