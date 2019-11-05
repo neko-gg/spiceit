@@ -33,4 +33,71 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <!-- Assembly plugins start -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>gg.neko.spiceit.example.agent.SpiceItExampleAgent</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Assembly plugins start -->
+
+            <!-- Dependency plugins start -->
+            <!-- maven-dependency-plugin is used to download and copy SpiceIt agent
+                 in this example project build directory -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <goals>
+                    <goal>get</goal>
+                    <goal>copy</goal>
+                </goals>
+                <configuration>
+                    <artifact>gg.neko.spiceit:spiceit-agent:${project.version}:jar:jar-with-dependencies</artifact>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                </configuration>
+            </plugin>
+            <!-- Dependency plugins end -->
+
+            <!-- Execution plugins start -->
+            <!-- exec-maven-plugin is used to run this example with the
+                 -javaagent option set to SpiceIt agent -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-javaagent:${project.build.directory}/spiceit-agent-${project.version}-jar-with-dependencies.jar</argument>
+                        <argument>-jar</argument>
+                        <argument>${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <!-- Execution plugins end -->
+        </plugins>
+    </build>
+
 </project>

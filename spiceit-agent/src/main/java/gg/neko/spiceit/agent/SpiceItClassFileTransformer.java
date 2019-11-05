@@ -17,6 +17,8 @@ public class SpiceItClassFileTransformer implements ClassFileTransformer {
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) {
+        if (className.startsWith("java/")) { return classfileBuffer; }
+
         return SpiceItInjector.builder()
                               .logItInjector(getLogItInjector())
                               .timeItInjector(getTimeItInjector())
