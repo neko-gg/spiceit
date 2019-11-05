@@ -17,21 +17,6 @@
     <name>SpiceIt Example Parent</name>
     <description>SpiceIt Example Parent contains sample projects using SpiceIt.</description>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>gg.neko.spiceit</groupId>
-                <artifactId>spiceit-example-maven-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>gg.neko.spiceit</groupId>
-                <artifactId>spiceit-example-agent</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <modules>
         <module>spiceit-example-maven-plugin</module>
         <module>spiceit-example-agent</module>
