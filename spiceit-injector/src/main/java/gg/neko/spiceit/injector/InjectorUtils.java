@@ -85,7 +85,7 @@ public class InjectorUtils {
         try {
             return ClassPool.getDefault().get(Throwable.class.getName());
         } catch (NotFoundException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to get class " + Throwable.class.getName(), e);
         }
     }
 
@@ -93,7 +93,7 @@ public class InjectorUtils {
         try {
             return ctField.getType();
         } catch (NotFoundException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to get type of field " + ctField.getName() + " in class " + ctField.getDeclaringClass(), e);
         }
     }
 
@@ -103,7 +103,7 @@ public class InjectorUtils {
             ctClass.addField(ctLoggerField);
             return ctLoggerField;
         } catch (CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to add logger field to class " + ctClass.getName(), e);
         }
     }
 
@@ -117,7 +117,7 @@ public class InjectorUtils {
         try {
             return ctMethod.getParameterTypes();
         } catch (NotFoundException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to get parameter types for " + ctMethod.getLongName(), e);
         }
     }
 
