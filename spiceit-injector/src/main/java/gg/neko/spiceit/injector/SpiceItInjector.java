@@ -80,7 +80,7 @@ public class SpiceItInjector {
             revise(ctClass);
             return ctClass.toBytecode();
         } catch (IOException | CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to revise class bytecode", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class SpiceItInjector {
                  .filter(this::revise)
                  .forEach(ctClass -> writeClassFile(ctClass, targetDirectory));
         } catch (IOException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to revise .class file in " + targetDirectory, e);
         }
     }
 
@@ -168,7 +168,7 @@ public class SpiceItInjector {
         try {
             return ctMethod.getAnnotations();
         } catch (ClassNotFoundException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to get annotations for " + ctMethod.getLongName(), e);
         }
     }
 
@@ -180,7 +180,7 @@ public class SpiceItInjector {
         try {
             return ClassPool.getDefault().makeClass(new FileInputStream(classFile), false);
         } catch (IOException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to make class for file " + classFile, e);
         }
     }
 
@@ -195,7 +195,7 @@ public class SpiceItInjector {
             LOGGER.debug("Adding to classpath: {}", classPath);
             ClassPool.getDefault().appendClassPath(classPath);
         } catch (NotFoundException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to append " + classPath + " to classpath", e);
         }
     }
 
