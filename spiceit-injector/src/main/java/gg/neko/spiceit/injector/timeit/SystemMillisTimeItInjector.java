@@ -46,7 +46,7 @@ public class SystemMillisTimeItInjector implements TimeItInjector {
 
             ctMethod.getDeclaringClass().addMethod(delegatorCtMethod);
         } catch (NotFoundException | CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to create delegate TimeIt method for " + ctMethod.getLongName(), e);
         }
     }
 
@@ -58,7 +58,7 @@ public class SystemMillisTimeItInjector implements TimeItInjector {
         try {
             ctMethod.insertAfter(logStatement, true);
         } catch (CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to insert TimeIt log statement for method " + ctMethod.getLongName(), e);
         }
     }
 

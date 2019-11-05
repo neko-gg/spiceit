@@ -33,7 +33,7 @@ public class Slf4jLogItInjector implements LogItInjector {
         try {
             ctMethod.insertBefore(logStatement);
         } catch (CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to insert LogIt entry log statement for method " + ctMethod.getLongName(), e);
         }
     }
 
@@ -51,7 +51,7 @@ public class Slf4jLogItInjector implements LogItInjector {
         try {
             ctMethod.addCatch(logAndRethrowBlock, InjectorUtils.getCatchExceptionTypeName());
         } catch (CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to insert LogIt error catch block for method " + ctMethod.getLongName(), e);
         }
     }
 
@@ -64,7 +64,7 @@ public class Slf4jLogItInjector implements LogItInjector {
         try {
             ctMethod.insertAfter(logStatement);
         } catch (CannotCompileException e) {
-            throw new SpiceItInjectorException(e);
+            throw new SpiceItInjectorException("failed to insert LogIt exit log statement for method " + ctMethod.getLongName(), e);
         }
     }
 
