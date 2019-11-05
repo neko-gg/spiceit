@@ -75,6 +75,12 @@ public class InjectorUtils {
                + ");";
     }
 
+    /**
+     * Returns a {@link CtClass} representing {@link Throwable}, that can
+     * be used as the exception type in catch blocks when spicing methods.
+     *
+     * @return a {@link CtClass} representing {@link Throwable}
+     */
     public static CtClass getCatchExceptionTypeName() {
         try {
             return ClassPool.getDefault().get(Throwable.class.getName());
