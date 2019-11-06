@@ -9,7 +9,7 @@ before_install:
   - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
   - killall -9 gpg-agent || echo "gpg-agent was not running"
   - export GPG_TTY=`tty`
-  - gpg-agent
+  - gpg-agent --daemon
   - sh -c "$GPG_EXECUTABLE --batch --import signingkey.asc"
   - sh -c "$GPG_EXECUTABLE --list-keys"
 after_success:

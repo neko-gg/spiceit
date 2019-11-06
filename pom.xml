@@ -419,8 +419,9 @@
                                 </goals>
                                 <configuration>
                                     <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
+                                        <arg>-v</arg>
+                                        <arg>--batch</arg>
+                                        <arg>--pinentry-mode=loopback</arg>
                                     </gpgArguments>
                                 </configuration>
                             </execution>
