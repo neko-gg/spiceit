@@ -6,7 +6,10 @@ before_install:
   - cp .travis.settings.xml $HOME/.m2/settings.xml
   - gpg --version
   - gpg2 --version
-  - export GPG_TTY=$(tty)
+  - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+  - killall -9 gpg-agent || echo "gpg-agent was not running"
+  - export GPG_TTY=`tty`
+  - gpg-agent
   - sh -c "$GPG_EXECUTABLE --batch --import signingkey.asc"
   - sh -c "$GPG_EXECUTABLE --list-keys"
 after_success:
