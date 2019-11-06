@@ -4,8 +4,12 @@ jdk:
 before_install:
   - openssl aes-256-cbc -K $encrypted_9d42c6f30771_key -iv $encrypted_9d42c6f30771_iv -in .signingkey.asc.enc -out signingkey.asc -d
   - cp .travis.settings.xml $HOME/.m2/settings.xml
+  - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+  - killall -9 gpg-agent
+  - gpg-agent
   - gpg2 --batch --keyring=$TRAVIS_BUILD_DIR/pubring.gpg --no-default-keyring --import signingkey.asc
   - gpg2 --batch --allow-secret-key-import --keyring=$TRAVIS_BUILD_DIR/secring.gpg --no-default-keyring --import signingkey.asc
+  - gpg2 --list-keys
 after_success:
   - mvn clean test jacoco:report-aggregate coveralls:report -Pcode-coverage
   - mvn clean deploy -Prelease
