@@ -421,7 +421,6 @@
                                     <gpgArguments>
                                         <arg>-v</arg>
                                         <arg>--batch</arg>
-                                        <arg>--pinentry-mode=loopback</arg>
                                     </gpgArguments>
                                 </configuration>
                             </execution>
