@@ -7,7 +7,7 @@ before_install:
   - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
   - gpgconf --reload gpg-agent
   - `$GPG_EXECUTABLE` --batch --import signingkey.asc
-  - `$GPG_EXECUTABLE` --batch --no-default-keyring --import signingkey.asc
+  - `$GPG_EXECUTABLE` --batch --import signingkey.asc
   - `$GPG_EXECUTABLE` --list-keys
 after_success:
   - mvn clean test jacoco:report-aggregate coveralls:report -Pcode-coverage
