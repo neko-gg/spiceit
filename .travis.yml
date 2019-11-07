@@ -1,8 +1,10 @@
 language: java
+
 jdk:
   - openjdk8
+
 before_install:
-  - openssl aes-256-cbc -K $encrypted_9d42c6f30771_key -iv $encrypted_9d42c6f30771_iv -in .signingkey.asc.enc -out signingkey.asc -d
+  - openssl aes-256-cbc -K $encrypted_d136eb043a05_key -iv $encrypted_d136eb043a05_iv -in .signingkey.asc.enc -out signingkey.asc -d
   - cp .travis.settings.xml $HOME/.m2/settings.xml
   - gpg --version
   - gpg2 --version
@@ -12,6 +14,7 @@ before_install:
   - gpg-agent --daemon
   - sh -c "$GPG_EXECUTABLE --batch --import signingkey.asc"
   - sh -c "$GPG_EXECUTABLE --list-keys"
+
 after_success:
   - mvn clean test jacoco:report-aggregate coveralls:report -Pcode-coverage
   - mvn clean deploy -Prelease
