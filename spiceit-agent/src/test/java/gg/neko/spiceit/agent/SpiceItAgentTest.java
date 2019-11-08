@@ -1,11 +1,18 @@
 package gg.neko.spiceit.agent;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.lang.instrument.Instrumentation;
 
 class SpiceItAgentTest {
+
+    @Test
+    void shouldInstantiateClass() {
+        SpiceItAgent spiceItAgent = new SpiceItAgent();
+        Assertions.assertNotNull(spiceItAgent);
+    }
 
     @Test
     void shouldAddTransformerToInstrumentation() {
