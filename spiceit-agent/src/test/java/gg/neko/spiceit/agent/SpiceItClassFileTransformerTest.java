@@ -38,7 +38,7 @@ class SpiceItClassFileTransformerTest {
 
         byte[] testBytecode = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("LogItTestClass.class").toURI()));
         byte[] transformedBytecode = spiceItClassFileTransformer.transform(null,
-                                                                           String.class.getName().replaceAll(Pattern.quote("."), Matcher.quoteReplacement("/")),
+                                                                           "LogItTestClass",
                                                                            null,
                                                                            null,
                                                                            Arrays.copyOf(testBytecode, testBytecode.length));
