@@ -36,8 +36,8 @@ public class SpiceItInjector {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpiceItInjector.class);
     private static final String ORDER_METHOD_NAME = "order";
 
-    private LogItInjector logItInjector;
-    private TimeItInjector timeItInjector;
+    private final LogItInjector logItInjector;
+    private final TimeItInjector timeItInjector;
 
     private SpiceItInjector(Builder builder) {
         this.logItInjector = builder.logItInjector;

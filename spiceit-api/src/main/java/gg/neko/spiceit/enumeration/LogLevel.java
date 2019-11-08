@@ -8,7 +8,7 @@ public enum LogLevel {
     WARN("warn"),
     ERROR("error");
 
-    private String methodName;
+    private final String methodName;
 
     LogLevel(String methodName) {
         this.methodName = methodName;

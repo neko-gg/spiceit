@@ -41,7 +41,7 @@ abstract class AbstractInjectorTest {
     static final String TEST_EXCEPTION_METHOD = "testExceptionMethod";
     static final String TEST_NOT_ANNOTATED_METHOD = "testNotAnnotatedMethod";
 
-    static Logger mockLogger = Mockito.mock(Logger.class);
+    static final Logger mockLogger = Mockito.mock(Logger.class);
     static Object testInstance;
 
     static SpiceItInjector.Builder getDefaultSpiceItInjectorBuilder() {
