@@ -48,7 +48,7 @@
                         <executions>
                             <execution>
                                 <id>report-aggregate</id>
-                                <phase/>
+                                <phase>none</phase>
                                 <goals>
                                     <goal>report-aggregate</goal>
                                 </goals>
