@@ -6,7 +6,7 @@ import gg.neko.spiceit.annotation.LogIt;
  * A collection of common log patterns.
  * <p>
  * Available placeholders are:
- * <table>
+ * <table summary="Placeholders with their substitution and examples.">
  *   <tr>
  *     <td><center><i>placeholder</i></center></td>
  *     <td><center><i>substitution</i></center></td>
