@@ -14,7 +14,7 @@ produces this output:
 ![example output](resources/example-output.png?raw=true)
 
 ## Getting started
-SpiceIt features are exposed by the [API](spiceit-api) module: go on and import it as a Maven dependency:
+SpiceIt features are exposed by the [API module](spiceit-api): go on and import it as a Maven dependency:
 ```xml
 <dependency>
     <groupId>gg.neko.spiceit</groupId>
@@ -43,8 +43,21 @@ add this plugin to your `pom.xml` plugins section:
     </plugin>
     ```
 - **Java agent**  
-download the agent from Maven Central Repository and launch your application with this option:
+download the agent from Maven Central Repository (or compile it from source, if that's your thing) and launch your application with this option:
     ```shell script
     -javaagent:spiceit-agent-0.1-jar-with-dependencies.jar
     ```
 Check out the example projects making use of [Maven plugin](spiceit-example-parent/spiceit-example-maven-plugin) and [Java agent](spiceit-example-parent/spiceit-example-agent).
+
+## Available features
+Here are the *spicy* features!
+- **LogIt** logs methods entry, exit and error
+- **TimeIt** logs methods execution time
+
+More coming soon™ 😎
+## Transitive dependencies
+Just [SLF4J](http://www.slf4j.org/) for logging, already provided by SpiceIt API module.  
+Since it's a simple façade for various logging framework, you can choose your favorite implementation, e.g. [logback](http://logback.qos.ch/) or [log4j](https://logging.apache.org/log4j/2.x/).
+
+## License
+Licensed under the [MIT License](LICENSE.txt).
