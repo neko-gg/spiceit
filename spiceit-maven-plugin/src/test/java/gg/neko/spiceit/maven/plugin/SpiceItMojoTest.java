@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,7 +22,9 @@ class SpiceItMojoTest {
         SpiceItMojo spiceItMojo = new SpiceItMojo();
 
         Path tempDirectory = Files.createTempDirectory("spiceit-maven-plugin-test-");
-        Files.copy(Paths.get(getClass().getClassLoader().getResource("LogItTestClass.java").toURI()),
+        URL testSource = getClass().getClassLoader().getResource("LogItTestClass.java");
+        Assertions.assertNotNull(testSource);
+        Files.copy(Paths.get(testSource.toURI()),
                    Paths.get(tempDirectory.toString(), "LogItTestClass.java"));
 
         JavaCompiler systemJavaCompiler = ToolProvider.getSystemJavaCompiler();

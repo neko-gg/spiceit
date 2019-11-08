@@ -7,6 +7,7 @@ import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,9 +35,13 @@ class SpiceItClassFileTransformerTest {
         SpiceItClassFileTransformer spiceItClassFileTransformer = new SpiceItClassFileTransformer();
 
         JavaCompiler systemJavaCompiler = ToolProvider.getSystemJavaCompiler();
-        systemJavaCompiler.run(System.in, System.out, System.err, Paths.get(getClass().getClassLoader().getResource("LogItTestClass.java").toURI()).toString());
+        URL testSource = getClass().getClassLoader().getResource("LogItTestClass.java");
+        Assertions.assertNotNull(testSource);
+        systemJavaCompiler.run(System.in, System.out, System.err, Paths.get(testSource.toURI()).toString());
 
-        byte[] testBytecode = Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("LogItTestClass.class").toURI()));
+        URL testClass = getClass().getClassLoader().getResource("LogItTestClass.class");
+        Assertions.assertNotNull(testClass);
+        byte[] testBytecode = Files.readAllBytes(Paths.get(testClass.toURI()));
         byte[] transformedBytecode = spiceItClassFileTransformer.transform(null,
                                                                            "LogItTestClass",
                                                                            null,
