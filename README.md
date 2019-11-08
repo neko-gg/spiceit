@@ -45,6 +45,6 @@ add this plugin to your `pom.xml` plugins section:
 - **Java agent**  
 download the agent from Maven Central Repository and launch your application with this option:
     ```shell script
-    -javaagent:spiceit-agent-1.0-jar-with-dependencies.jar
+    -javaagent:spiceit-agent-0.1-jar-with-dependencies.jar
     ```
 Check out the example projects making use of [Maven plugin](spiceit-example-parent/spiceit-example-maven-plugin) and [Java agent](spiceit-example-parent/spiceit-example-agent).
