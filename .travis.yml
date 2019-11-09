@@ -13,6 +13,6 @@ before_install:
   - sh -c "$GPG_EXECUTABLE --batch --import signingkey.asc"
 
 script:
-  - mvn test -B
-  - mvn clean test jacoco:report-aggregate coveralls:report -B -Pcode-coverage
-  - mvn clean deploy -DskipTests -Prelease
+  - mvn test -B || travis_terminate 1
+  - mvn clean test jacoco:report-aggregate coveralls:report -B -Pcode-coverage || travis_terminate 1
+  - mvn clean deploy -DskipTests -Prelease || travis_terminate 1
