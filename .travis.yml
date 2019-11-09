@@ -4,12 +4,9 @@ jdk:
   - openjdk8
 
 before_install:
-  - openssl aes-256-cbc -K $encrypted_9d42c6f30771_key -iv $encrypted_9d42c6f30771_iv -in .signingkey.asc.enc -out signingkey.asc -d
   - cp .travis.settings.xml $HOME/.m2/settings.xml
   - echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-  - killall -9 gpg-agent || echo "gpg-agent was not running"
-  - export GPG_TTY=`tty`
-  - gpg-agent --daemon
+  - openssl aes-256-cbc -K $encrypted_9d42c6f30771_key -iv $encrypted_9d42c6f30771_iv -in .signingkey.asc.enc -out signingkey.asc -d
   - sh -c "$GPG_EXECUTABLE --batch --import signingkey.asc"
 
 script:
