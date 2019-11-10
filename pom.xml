@@ -83,7 +83,7 @@
         <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
 
-        <slf4j-api.version>1.7.28</slf4j-api.version>
+        <slf4j-api.version>1.7.29</slf4j-api.version>
         <javassist.version>3.26.0-GA</javassist.version>
         <plexus-classworlds.version>2.6.0</plexus-classworlds.version>
         <logback-classic.version>1.2.3</logback-classic.version>
