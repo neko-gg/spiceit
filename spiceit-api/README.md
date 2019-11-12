@@ -13,4 +13,4 @@ Include this module in your project:
 ## Available features
 Here is what SpiceIt currently has to offer:
 - [**LogIt**](LogIt.md) logs methods entry, exit and error
-- **TimeIt** logs methods execution time
+- [**TimeIt**](TimeIt.md) logs methods execution time
