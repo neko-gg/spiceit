@@ -25,20 +25,14 @@ It works out of the box, but you can still customize it.
 The processing order of this annotation.  
 If a method has multiple SpiceIt annotations,
 they are processed sequentially in this order (ascending).
-  
-
 - **entryPattern** *String*  
 The log pattern for method entry.
 - **entryLogLevel** *LogLevel*  
 The log level for method entry.
-  
-
 - **errorPattern** *String*  
 The log pattern for method exit.
 - **errorLogLevel** *LogLevel*  
 The log level for method exit.
-  
-
 - **exitPattern** *String*  
 The log pattern for method error.
 - **exitLogLevel** *LogLevel*  
