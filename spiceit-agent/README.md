@@ -8,7 +8,7 @@ Just download SpiceIt Agent from Maven Central Repository.
 ## Usage
 Run your application with the `-javaagent` option:  
 ```shell script
-java -javaagent:spiceit-agent-0.1-jar-with-dependencies.jar -jar MyProject.jar
+java -javaagent:spiceit-agent-0.2-jar-with-dependencies.jar -jar MyProject.jar
 ```
 
 ## Pros

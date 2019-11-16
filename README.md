@@ -19,7 +19,7 @@ SpiceIt features are exposed by the [API module](spiceit-api): go on and import 
 <dependency>
     <groupId>gg.neko.spiceit</groupId>
     <artifactId>spiceit-api</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
@@ -32,7 +32,7 @@ add this plugin to your `pom.xml` plugins section:
     <plugin>
         <groupId>gg.neko.spiceit</groupId>
         <artifactId>spiceit-maven-plugin</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
         <executions>
             <execution>
                 <goals>
@@ -45,7 +45,7 @@ add this plugin to your `pom.xml` plugins section:
 - **Java agent**  
 download the agent from Maven Central Repository (or compile it from source, if that's your thing) and launch your application with this option:
     ```shell script
-    -javaagent:spiceit-agent-0.1-jar-with-dependencies.jar
+    -javaagent:spiceit-agent-0.2-jar-with-dependencies.jar
     ```
 Check out the example projects making use of [Maven plugin](spiceit-example-parent/spiceit-example-maven-plugin) and [Java agent](spiceit-example-parent/spiceit-example-agent).
 

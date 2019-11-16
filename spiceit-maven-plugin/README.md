@@ -8,7 +8,7 @@ Add SpiceIt Maven Plugin to your `pom.xml` plugins section:
 <plugin>
     <groupId>gg.neko.spiceit</groupId>
     <artifactId>spiceit-maven-plugin</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <executions>
         <execution>
             <goals>
@@ -27,7 +27,7 @@ If you want to bind it to a different phase (e.g.: to also _spice_ your test cla
 <plugin>
     <groupId>gg.neko.spiceit</groupId>
     <artifactId>spiceit-maven-plugin</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <executions>
         <execution>
             <phase>process-test-classes</phase>

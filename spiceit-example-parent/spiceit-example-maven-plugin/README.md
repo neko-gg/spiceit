@@ -9,5 +9,5 @@ mvn clean install
 
 ## Run example
 ```shell script
-java -jar target/spiceit-example-maven-plugin-0.1-jar-with-dependencies.jar
+java -jar target/spiceit-example-maven-plugin-0.2-jar-with-dependencies.jar
 ```

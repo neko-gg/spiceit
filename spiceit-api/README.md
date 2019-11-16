@@ -6,7 +6,7 @@ Include this module in your project:
 <dependency>
     <groupId>gg.neko.spiceit</groupId>
     <artifactId>spiceit-api</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
