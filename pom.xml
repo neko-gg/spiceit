@@ -7,7 +7,7 @@
 
     <groupId>gg.neko.spiceit</groupId>
     <artifactId>spiceit-parent</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>pom</packaging>
 
     <name>SpiceIt Parent</name>
