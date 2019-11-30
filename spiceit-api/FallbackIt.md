@@ -43,7 +43,7 @@ Must be callable from the calling method (for example, it must be `static` if ca
 - **triggeringExceptions** *Class<? extends Throwable>[]*  
 The exception types for which to invoke the fallback method.
 - **ignoredExceptions** *Class<? extends Throwable>[]*  
-The exception types for which NOT to invoke the fallback method.
+The exception types for which **not** to invoke the fallback method.
 - **fallbackOnNull** *boolean*  
 Whether to invoke the fallback method when `null` is returned.
 
