@@ -1,8 +1,10 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.annotation.FallbackIt;
 import gg.neko.spiceit.annotation.LogIt;
 import gg.neko.spiceit.annotation.TimeIt;
 import gg.neko.spiceit.injector.exception.SpiceItInjectorException;
+import gg.neko.spiceit.injector.fallbackit.FallbackItInjector;
 import gg.neko.spiceit.injector.logit.LogItInjector;
 import gg.neko.spiceit.injector.timeit.TimeItInjector;
 import gg.neko.spiceit.util.SpiceItUtils;
@@ -38,10 +40,12 @@ public class SpiceItInjector {
 
     private final LogItInjector logItInjector;
     private final TimeItInjector timeItInjector;
+    private final FallbackItInjector fallbackItInjector;
 
     private SpiceItInjector(Builder builder) {
         this.logItInjector = builder.logItInjector;
         this.timeItInjector = builder.timeItInjector;
+        this.fallbackItInjector = builder.fallbackItInjector;
     }
 
     public static Builder builder() {
@@ -132,6 +136,8 @@ public class SpiceItInjector {
             this.logItInjector.inject((LogIt) annotation, ctMethod);
         } else if (annotation instanceof TimeIt) {
             this.timeItInjector.inject((TimeIt) annotation, ctMethod);
+        } else if (annotation instanceof FallbackIt) {
+            this.fallbackItInjector.inject((FallbackIt) annotation, ctMethod);
         }
 
         AnnotationsAttribute annotationsAttribute = (AnnotationsAttribute) ctMethod.getMethodInfo().getAttribute(AnnotationsAttribute.visibleTag);
@@ -203,6 +209,7 @@ public class SpiceItInjector {
 
         private LogItInjector logItInjector;
         private TimeItInjector timeItInjector;
+        private FallbackItInjector fallbackItInjector;
 
         private Builder() { }
 
@@ -213,6 +220,11 @@ public class SpiceItInjector {
 
         public Builder timeItInjector(TimeItInjector timeItInjector) {
             this.timeItInjector = timeItInjector;
+            return this;
+        }
+
+        public Builder fallbackItInjector(FallbackItInjector fallbackItInjector) {
+            this.fallbackItInjector = fallbackItInjector;
             return this;
         }
 

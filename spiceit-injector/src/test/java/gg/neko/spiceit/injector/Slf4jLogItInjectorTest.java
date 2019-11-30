@@ -23,7 +23,8 @@ class Slf4jLogItInjectorTest extends AbstractInjectorTest {
     @BeforeAll
     static void mockLogger() throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
         spiceItInjector = getDefaultSpiceItInjectorBuilder().logItInjector(LogItInjectorType.SLF4J.getLogItInjector()).build();
-        setUpMockLoggerAndTestInstance(spiceItInjector, LOG_IT_TEST_CLASS);
+        setUpTestInstance(spiceItInjector, LOG_IT_TEST_CLASS);
+        setUpMockLogger();
     }
 
     @BeforeEach

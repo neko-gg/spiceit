@@ -5,6 +5,7 @@ public class SpiceItExample {
     public static void main(String[] args) {
         LogItExample.runExample();
         TimeItExample.runExample();
+        FallbackItExample.runExample();
     }
 
 }

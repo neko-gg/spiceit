@@ -1,5 +1,6 @@
 package gg.neko.spiceit.injector;
 
+import gg.neko.spiceit.injector.fallbackit.FallbackItInjectorType;
 import gg.neko.spiceit.injector.logit.LogItInjectorType;
 import gg.neko.spiceit.injector.timeit.TimeItInjectorType;
 import javassist.CannotCompileException;
@@ -31,13 +32,17 @@ abstract class AbstractInjectorTest {
     static final String LOG_IT_TEST_CLASS = "valid/LogItTestClass.class";
     static final String TIME_IT_TEST_CLASS = "valid/TimeItTestClass.class";
     static final String LOG_IT_TIME_IT_TEST_CLASS = "valid/LogItTimeItTestClass.class";
+    static final String FALLBACK_IT_TEST_CLASS = "valid/FallbackItTestClass.class";
 
     static final String LOG_IT_INVALID_ENTRY_TEST_CLASS = "invalid/LogItInvalidEntryTestClass.class";
     static final String LOG_IT_INVALID_ERROR_TEST_CLASS = "invalid/LogItInvalidErrorTestClass.class";
     static final String LOG_IT_INVALID_EXIT_TEST_CLASS = "invalid/LogItInvalidExitTestClass.class";
     static final String TIME_IT_INVALID_PATTERN_TEST_CLASS = "invalid/TimeItInvalidPatternTestClass.class";
+    static final String FALLBACK_IT_INVALID_METHOD_TEST_CLASS = "invalid/FallbackItInvalidMethodTestClass.class";
+    static final String FALLBACK_IT_INVALID_RETURN_TEST_CLASS = "invalid/FallbackItInvalidReturnTestClass.class";
 
     static final String TEST_METHOD = "testMethod";
+    static final String TEST_ALT_METHOD = "altTestMethod";
     static final String TEST_EXCEPTION_METHOD = "testExceptionMethod";
     static final String TEST_NOT_ANNOTATED_METHOD = "testNotAnnotatedMethod";
 
@@ -47,7 +52,8 @@ abstract class AbstractInjectorTest {
     static SpiceItInjector.Builder getDefaultSpiceItInjectorBuilder() {
         return SpiceItInjector.builder()
                               .logItInjector(LogItInjectorType.SLF4J.getLogItInjector())
-                              .timeItInjector(TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector());
+                              .timeItInjector(TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector())
+                              .fallbackItInjector(FallbackItInjectorType.TRY_CATCH.getFallbackItInjector());
     }
 
     static void compileResources() {
@@ -56,10 +62,13 @@ abstract class AbstractInjectorTest {
         Stream.of(LOG_IT_TEST_CLASS,
                   TIME_IT_TEST_CLASS,
                   LOG_IT_TIME_IT_TEST_CLASS,
+                  FALLBACK_IT_TEST_CLASS,
                   LOG_IT_INVALID_ENTRY_TEST_CLASS,
                   LOG_IT_INVALID_ERROR_TEST_CLASS,
                   LOG_IT_INVALID_EXIT_TEST_CLASS,
-                  TIME_IT_INVALID_PATTERN_TEST_CLASS)
+                  TIME_IT_INVALID_PATTERN_TEST_CLASS,
+                  FALLBACK_IT_INVALID_METHOD_TEST_CLASS,
+                  FALLBACK_IT_INVALID_RETURN_TEST_CLASS)
               .map(pathString -> pathString.replaceFirst("(.*)\\.class", "$1.java"))
               .map(pathString -> Assertions.assertDoesNotThrow(() -> getPath(pathString)))
               .map(Path::toString)
@@ -70,7 +79,7 @@ abstract class AbstractInjectorTest {
               });
     }
 
-    static void setUpMockLoggerAndTestInstance(SpiceItInjector spiceItInjector, String testClassFileName) throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
+    static void setUpTestInstance(SpiceItInjector spiceItInjector, String testClassFileName) throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException {
         compileResources();
 
         Path classPath = getPath(testClassFileName);
@@ -81,6 +90,9 @@ abstract class AbstractInjectorTest {
 
         Class<?> testClass = ctClass.toClass();
         testInstance = testClass.newInstance();
+    }
+
+    static void setUpMockLogger() throws IllegalAccessException, NoSuchFieldException {
         Optional<Field> optionalLoggerField = Arrays.stream(testInstance.getClass().getDeclaredFields())
                                                     .filter(field -> Logger.class.equals(field.getType()))
                                                     .findFirst();

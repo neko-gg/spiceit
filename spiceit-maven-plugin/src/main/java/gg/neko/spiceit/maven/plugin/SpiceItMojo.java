@@ -1,6 +1,8 @@
 package gg.neko.spiceit.maven.plugin;
 
 import gg.neko.spiceit.injector.SpiceItInjector;
+import gg.neko.spiceit.injector.fallbackit.FallbackItInjector;
+import gg.neko.spiceit.injector.fallbackit.FallbackItInjectorType;
 import gg.neko.spiceit.injector.logit.LogItInjector;
 import gg.neko.spiceit.injector.logit.LogItInjectorType;
 import gg.neko.spiceit.injector.timeit.TimeItInjector;
@@ -36,6 +38,7 @@ public class SpiceItMojo extends AbstractMojo {
         SpiceItInjector.builder()
                        .logItInjector(getLogItInjector())
                        .timeItInjector(getTimeItInjector())
+                       .fallbackItInjector(getFallbackItInjector())
                        .build()
                        .revise(new File(outputDirectory), dependencies);
     }
@@ -46,6 +49,10 @@ public class SpiceItMojo extends AbstractMojo {
 
     private TimeItInjector getTimeItInjector() {
         return TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector();
+    }
+
+    private FallbackItInjector getFallbackItInjector() {
+        return FallbackItInjectorType.TRY_CATCH.getFallbackItInjector();
     }
 
 }

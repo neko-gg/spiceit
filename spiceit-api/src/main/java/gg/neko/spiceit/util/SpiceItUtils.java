@@ -1,5 +1,6 @@
 package gg.neko.spiceit.util;
 
+import gg.neko.spiceit.annotation.FallbackIt;
 import gg.neko.spiceit.annotation.LogIt;
 import gg.neko.spiceit.annotation.TimeIt;
 
@@ -22,7 +23,8 @@ public class SpiceItUtils {
      * @return a {@link List} of available SpiceIt annotations
      */
     public static List<Class<? extends Annotation>> spiceItAnnotations() {
-        return Arrays.asList(TimeIt.class,
+        return Arrays.asList(FallbackIt.class,
+                             TimeIt.class,
                              LogIt.class);
     }
 

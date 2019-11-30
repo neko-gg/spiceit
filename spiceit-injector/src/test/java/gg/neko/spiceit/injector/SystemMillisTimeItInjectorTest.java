@@ -28,7 +28,8 @@ class SystemMillisTimeItInjectorTest extends AbstractInjectorTest {
     @BeforeAll
     static void mockLogger() throws IOException, URISyntaxException, CannotCompileException, IllegalAccessException, InstantiationException, NoSuchFieldException {
         spiceItInjector = getDefaultSpiceItInjectorBuilder().timeItInjector(TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector()).build();
-        setUpMockLoggerAndTestInstance(spiceItInjector, TIME_IT_TEST_CLASS);
+        setUpTestInstance(spiceItInjector, TIME_IT_TEST_CLASS);
+        setUpMockLogger();
     }
 
     @BeforeEach

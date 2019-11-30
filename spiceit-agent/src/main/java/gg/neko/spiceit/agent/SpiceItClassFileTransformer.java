@@ -1,6 +1,8 @@
 package gg.neko.spiceit.agent;
 
 import gg.neko.spiceit.injector.SpiceItInjector;
+import gg.neko.spiceit.injector.fallbackit.FallbackItInjector;
+import gg.neko.spiceit.injector.fallbackit.FallbackItInjectorType;
 import gg.neko.spiceit.injector.logit.LogItInjector;
 import gg.neko.spiceit.injector.logit.LogItInjectorType;
 import gg.neko.spiceit.injector.timeit.TimeItInjector;
@@ -18,6 +20,7 @@ public class SpiceItClassFileTransformer implements ClassFileTransformer {
         this.spiceItInjector = SpiceItInjector.builder()
                                               .logItInjector(getLogItInjector())
                                               .timeItInjector(getTimeItInjector())
+                                              .fallbackItInjector(getFallbackItInjector())
                                               .build();
     }
 
@@ -44,6 +47,10 @@ public class SpiceItClassFileTransformer implements ClassFileTransformer {
 
     private TimeItInjector getTimeItInjector() {
         return TimeItInjectorType.SYSTEM_MILLIS.getTimeItInjector();
+    }
+
+    private FallbackItInjector getFallbackItInjector() {
+        return FallbackItInjectorType.TRY_CATCH.getFallbackItInjector();
     }
 
 }
