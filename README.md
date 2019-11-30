@@ -53,6 +53,7 @@ Check out the example projects making use of [Maven plugin](spiceit-example-pare
 Here are the *spicy* features!
 - [**LogIt**](spiceit-api/LogIt.md) logs methods entry, exit and error
 - [**TimeIt**](spiceit-api/TimeIt.md) logs methods execution time
+- [**FallbackIt**](spiceit-api/FallbackIt.md) invokes a fallback method
 
 More coming soon™ 😎
 ## Transitive dependencies
